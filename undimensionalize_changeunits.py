@@ -37,9 +37,9 @@ v = []
 
 # scale out units from input file and store column values in independent arrays
 for line in file.readlines():
-    fe_init.append(float(line.split()[1])*2/rho_s*(rho_s*g_n*r_s**2)**(3.0/2))
-    r_init.append(float(line.split()[2])/r_s)
-    psi.append(float(line.split()[3])/(rho_s*g_n*r_s**2))
+    fe_init.append(float(line.split()[1]) * 2 / rho_s * (rho_s * g_n * r_s ** 2) ** (3.0 / 2))
+    r_init.append(float(line.split()[2]) / r_s)
+    psi.append(float(line.split()[3]) / (rho_s * g_n * r_s**2))
 
 file.close()
 
@@ -64,7 +64,7 @@ for rad in r_init:
     while i < len(psi):
         # the second term psi[j] is the energy of the particle; the first term
         # psi[i] is the binding energy
-        vel = 2 * (psi[i]-psi[j])
+        vel = 2 * (psi[i] - psi[j])
         vel = mp.sqrt(vel)
         # data is written as r, v, fe
         v.append(vel)
