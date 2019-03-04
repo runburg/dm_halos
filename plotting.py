@@ -12,7 +12,7 @@ import numpy as np
 import mpmath as mp
 from matplotlib import pyplot as plot
 import hfuncs as h
-import text
+import send_textmessage
 
 
 #infile = open("fine_detail_jS_arrays.txt", 'rb')
