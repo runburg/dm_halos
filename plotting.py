@@ -67,8 +67,6 @@ plot.xlabel(r"$\tilde{r}$")
 plot.ylabel(r"$G(\tilde{r})$")
 plot.yscale('log')
 
-plot.show()
-
 p.savefig("gvalues.pdf", bbox_inches="tight")
 
 
@@ -99,7 +97,6 @@ plot.ylabel(r"$H(y)$")
 plot.xscale('log')
 plot.legend(markerscale=25)
 
-plot.show()
 p.savefig("hfuncs.pdf", bbox_inches='tight')
 text.sendtext(str(__file__), "hfuncs.pdf")
 
