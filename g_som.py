@@ -9,7 +9,7 @@ Created on Tue Jan 15 20:53:54 2019
 from scipy import integrate, interpolate
 import numpy as np
 import mpmath as mp
-from text import sendtext
+from send_textmessage import sendtext
 
 # set working precision of decimal points
 mp.dps = 50
@@ -46,7 +46,10 @@ for rad in r_unique:
         if i >= len(r):
             break
     for vv, ffee in zip(v_temp, fe_temp):
-        v2int = interpolate.interp1d(np.array(v_temp).astype(float), np.array([vvv**2*fffeee for (vvv,fffeee) in zip(v_temp, fe_temp)]), kind='cubic', fill_value='extrapolate')
+        x=np.array(v_temp).astype(float)
+        y=np.array([vvv**2*fffeee for (vvv,fffeee) in zip(v_temp, fe_temp)])
+        if len(x)>1 and len(y)>1:
+            v2int = interpolate.interp1d(x, y, kind='linear', fill_value='extrapolate')
         func.append(ffee*vv*integrate.quad(v2int, vv, v_temp[-1])[0])
     # stores the value of the velocity integration
     # this will change when not doing s-wave
@@ -55,7 +58,7 @@ for rad in r_unique:
     v_temp.clear()
     func.clear()
     rf.append(rad)
-
+print(x,y)
 outfile = open("g_som.txt", 'wb')
 np.savez(outfile, gsom = np.array(g_som), r = np.array(rf))
 outfile.close()
