@@ -98,7 +98,7 @@ plot.xscale('log')
 plot.legend(markerscale=25)
 
 p.savefig("hfuncs.pdf", bbox_inches='tight')
-text.sendtext(str(__file__), "hfuncs.pdf")
+send_textmessage.sendtext(str(__file__), "hfuncs.pdf")
 
 
 

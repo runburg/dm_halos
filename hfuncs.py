@@ -10,7 +10,7 @@ from scipy import integrate, interpolate
 import numpy as np
 import mpmath as mp
 
-mp.dps = 50
+mp.dps = 100
 
 def rho(x):
     return 1/(mp.mpf(x)*(1+mp.mpf(x))**2)
