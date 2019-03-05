@@ -10,7 +10,7 @@ from scipy import integrate, interpolate
 import numpy as np
 import mpmath as mp
 
-mp.dps = 50
+mp.dps = 100
 
 def rho(x):
     return 1/(mp.mpf(x)*(1+mp.mpf(x))**2)
@@ -69,4 +69,8 @@ gsomfunc = interpolate.interp1d(rsom, g_som, kind = 'cubic', fill_value='extrapo
 def hsom(y):
 #    hint = interpolate.interp1d(rd, np.vectorize(lambda x: gdfunc(x)/np.sqrt(1-((y-0.000000001)/x)**2))(rd), kind = 'cubic', fill_value='extrapolate')
 #    return y * integrate.quad(hint, y, rd[-1])[0]
+<<<<<<< HEAD
     return y * mp.quad(lambda x: gsomfunc(x)/(mp.sqrt(1-(mp.fdiv(y,x))**2)), y, rsom[-1])[0]
+=======
+    return y * integrate.quad(lambda x: gsomfunc(x)/(mp.sqrt(1-(mp.fdiv(y,x))**2)), y, rsom[-1])[0]
+>>>>>>> 285e8ab123ed60b908ac6930e51254ddb4bd07cf
