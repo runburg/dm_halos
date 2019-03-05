@@ -99,15 +99,6 @@ plot.legend(markerscale=25)
 
 p.savefig("hfuncs.pdf", bbox_inches='tight')
 send_textmessage.sendtext(str(__file__), "hfuncs.pdf")
-<<<<<<< HEAD
-=======
-
-
-
-''''''
-
-
->>>>>>> 285e8ab123ed60b908ac6930e51254ddb4bd07cf
 
 #o=250
 #p = plot.figure()
