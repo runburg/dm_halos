@@ -9,7 +9,6 @@ Created on Tue Jan 15 21:01:21 2019
 from scipy import integrate, interpolate
 import numpy as np
 import mpmath as mp
-from matplotlib import pyplot as plot
 from text import sendtext
 
 # set working precision of decimal points

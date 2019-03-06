@@ -23,8 +23,10 @@ infile.close()
 # create a list of unique r values and how often they occur
 r_unique = np.unique(r)
 
+
 def rho(x):
     return 1/(mp.mpf(x)*(1+mp.mpf(x))**2)
+
 
 i = 0
 # initial arrays for grabbing parts of the data
@@ -49,12 +51,13 @@ for rad in r_unique:
             break
     # stores the value of the velocity integration
     # this will change when not doing s-wave
-    g_dwave.append(8*mp.pi*rho(rad)*integrate.simps(func1, v_temp) + 160*mp.pi**2 /3*integrate.simps(func2, v_temp)**2)
+    g_dwave.append(8*mp.pi*rho(rad)*integrate.simps(func1, v_temp)
+                   + 160*mp.pi**2 / 3*integrate.simps(func2, v_temp)**2)
     v_temp.clear()
     func1.clear()
     func2.clear()
     rf.append(rad)
 
 outfile = open("g_d.txt", 'wb')
-np.savez(outfile, gd = np.array(g_dwave), r = np.array(rf))
+np.savez(outfile, gd=np.array(g_dwave), r=np.array(rf))
 outfile.close()

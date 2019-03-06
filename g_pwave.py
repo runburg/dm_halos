@@ -11,7 +11,7 @@ import numpy as np
 import mpmath as mp
 
 # set working precision of decimal points
-#mp.dps = 25
+# mp.dps = 25
 
 '''p-wave annihilation'''
 infile = open("fe_GC_NFW_nounits.txt", 'rb')
@@ -24,8 +24,10 @@ infile.close()
 # create a list of unique r values and how often they occur
 r_unique = np.unique(r)
 
+
 def rho(x):
     return 1/(mp.mpf(x)*(1+mp.mpf(x))**2)
+
 
 i = 0
 # initial arrays for grabbing parts of the data
@@ -54,5 +56,5 @@ for rad in r_unique:
     rf.append(rad)
 
 outfile = open("g_p.txt", 'wb')
-np.savez(outfile, gp = np.array(g_pwave), r = np.array(rf))
+np.savez(outfile, gp=np.array(g_pwave), r=np.array(rf))
 outfile.close()
