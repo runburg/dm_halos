@@ -11,7 +11,7 @@ import numpy as np
 import mpmath as mp
 
 # set working precision of decimal points
-#mp.dps = 25
+# mp.dps = 25
 
 '''s-wave annihilation'''
 infile = open("fe_GC_NFW_nounits.txt", 'rb')
@@ -51,5 +51,5 @@ for rad in r_unique:
     rf.append(rad)
 
 outfile = open("g_s.txt", 'wb')
-np.savez(outfile, gs = np.array(g_swave), r = np.array(rf))
+np.savez(outfile, gs=np.array(g_swave), r=np.array(rf))
 outfile.close()
