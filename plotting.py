@@ -91,7 +91,7 @@ with open('f_values.txt', 'a') as fvals:
     fvals.write("\nd-wave\t" + mp.sqrt(nd/dd))
     fvals.write("\nsom.enh.\t" + mp.sqrt(nsom/dsom))
 
-yval = np.logspace(-2.85, 0.4, num=250)
+yval = np.logspace(-2.85, 0.4, num=500)
 
 isst = [h.hts(yy)/dst for yy in yval]
 # iss = [h.hs(yy)/ds for yy in yval]
@@ -113,6 +113,11 @@ plot.legend(markerscale=25)
 
 p.savefig("hfuncs.pdf", bbox_inches='tight')
 send_textmessage.sendtext(str(__file__), "hfuncs.pdf")
+
+outfile = open("h_funcs.txt", 'wb')
+np.savez(outfile, hsn=np.array(isst), hpn=np.array(ipp), hdn=np.array(idd),
+         hsomn=np.array(isom), radius=np.array(yval))
+outfile.close()
 
 # o=250
 # p = plot.figure()
