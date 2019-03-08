@@ -85,11 +85,11 @@ nsom = integrate.quad(lambda x: x**2*h.hsom(x), 0, 50)[0]
 
 with open('f_values.txt', 'a') as fvals:
     fvals.write("F-values\n-----------------------------\n")
-    fvals.write("Theor. s-wave\t" + mp.sqrt(nst/dst))
-    fvals.write("\ns-wave\t" + mp.sqrt(ns/ds))
-    fvals.write("\np_wave\t" + mp.sqrt(np/dp))
-    fvals.write("\nd-wave\t" + mp.sqrt(nd/dd))
-    fvals.write("\nsom.enh.\t" + mp.sqrt(nsom/dsom))
+    fvals.write("Theor. s-wave\t" + str(mp.sqrt(nst/dst)))
+    fvals.write("\ns-wave\t" + str(mp.sqrt(ns/ds)))
+    fvals.write("\np_wave\t" + str(mp.sqrt(np/dp)))
+    fvals.write("\nd-wave\t" + str(mp.sqrt(nd/dd)))
+    fvals.write("\nsom.enh.\t" + str(mp.sqrt(nsom/dsom)))
 
 yval = np.logspace(-2.85, 0.4, num=500)
 
