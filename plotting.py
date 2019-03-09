@@ -77,7 +77,7 @@ nst = integrate.quad(lambda x: x**2*h.hts(x), 0, 50)[0]
 ds = integrate.quad(h.hs, 0, 50)[0]
 ns = integrate.quad(lambda x: x**2*h.hs(x), 0, 50)[0]
 dp = integrate.quad(h.hp, 0, 50)[0]
-np = integrate.quad(lambda x: x**2*h.hp(x), 0, 50)[0]
+nP = integrate.quad(lambda x: x**2*h.hp(x), 0, 50)[0]
 dd = integrate.quad(h.hd, 0, 50)[0]
 nd = integrate.quad(lambda x: x**2*h.hd(x), 0, 50)[0]
 dsom = integrate.quad(h.hsom, 0, 50)[0]
@@ -87,7 +87,7 @@ with open('f_values.txt', 'a') as fvals:
     fvals.write("F-values\n-----------------------------\n")
     fvals.write("Theor. s-wave\t" + str(mp.sqrt(nst/dst)))
     fvals.write("\ns-wave\t" + str(mp.sqrt(ns/ds)))
-    fvals.write("\np_wave\t" + str(mp.sqrt(np/dp)))
+    fvals.write("\np_wave\t" + str(mp.sqrt(nP/dp)))
     fvals.write("\nd-wave\t" + str(mp.sqrt(nd/dd)))
     fvals.write("\nsom.enh.\t" + str(mp.sqrt(nsom/dsom)))
 
