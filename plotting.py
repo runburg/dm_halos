@@ -10,7 +10,7 @@ from scipy import integrate
 import numpy as np
 import mpmath as mp
 from matplotlib import pyplot as plot
-import hfuncs_alt as h
+import hfuncs as h
 import send_textmessage
 
 

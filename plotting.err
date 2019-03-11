@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "plotting.py", line 59, in <module>
+    p = plot.figure()
+  File "/lus/scratch/software/lang/python/bin/3.5.1/lib/python3.5/site-packages/matplotlib/pyplot.py", line 535, in figure
+    **kwargs)
+  File "/lus/scratch/software/lang/python/bin/3.5.1/lib/python3.5/site-packages/matplotlib/backends/backend_tkagg.py", line 81, in new_figure_manager
+    return new_figure_manager_given_figure(num, figure)
+  File "/lus/scratch/software/lang/python/bin/3.5.1/lib/python3.5/site-packages/matplotlib/backends/backend_tkagg.py", line 89, in new_figure_manager_given_figure
+    window = Tk.Tk()
+  File "/lus/scratch/software/lang/python/bin/3.5.1/lib/python3.5/tkinter/__init__.py", line 1867, in __init__
+    self.tk = _tkinter.create(screenName, baseName, className, interactive, wantobjects, useTk, sync, use)
+_tkinter.TclError: couldn't connect to display "localhost:28.0"
