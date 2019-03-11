@@ -8,10 +8,11 @@ Created on Tue Dec 18 10:21:01 2018
 
 from scipy import integrate
 import numpy as np
-import mpmath as mp
-from matplotlib import pyplot as plot
+import matplotlib as mpl
 import hfuncs as h
 import send_textmessage
+mpl.use('agg')
+import matplotlib.pyplot as plot
 
 
 #  infile = open("fine_detail_jS_arrays.txt", 'rb')
