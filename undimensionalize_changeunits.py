@@ -9,82 +9,75 @@ Created on Thu Jan 10 19:26:52 2019
 import numpy as np
 import mpmath as mp
 
-print('start: reading data from file')
 
-# set working precision of decimal points
-mp.dps = 25
+def undim(file, g_n, r_s, rho_s):
+    # print('start: reading data from file')
 
-'''first we will read the data from the velocity distribution file and scale
-out units'''
-# first column is ignored, second column is f(E), third column is r, fourth
-# column is psi
-file = open("fe_GC_NFW.txt", 'r')
+    # set working precision of decimal points
+    mp.dps = 25
 
-# units of km/s
-c = float(2.99792458E5)
-# units of kpc/solar mass * (km/s)^2
-g_n = float(4.325E-6)
-# units of kpc
-r_s = float(20.0)
-# units of solar mass/kpc^3
-rho_s = float(8E6)
+    '''first we will read the data from the velocity distribution file and
+    scale out units'''
+    # first column is ignored, second column is f(E), third column is r, fourth
+    # column is psi
+    file = open(file+".txt", 'r')
 
-# initial arrays
-fe_init = []
-r_init = []
-psi = []
-v = []
+    # initial arrays
+    fe_init = []
+    r_init = []
+    psi = []
+    v = []
 
-# scale out units from input file and store column values in independent arrays
-for line in file.readlines():
-    fe_init.append(float(line.split()[1]) * 2 / rho_s * (rho_s * g_n * r_s ** 2) ** (3.0 / 2))
-    r_init.append(float(line.split()[2]) / r_s)
-    psi.append(float(line.split()[3]) / (rho_s * g_n * r_s**2))
+    # scale out units from input file and store column values in ind. arrays
+    for line in file.readlines():
+        fe_init.append(float(line.split()[1])
+                       * 2/rho_s*(rho_s*g_n*r_s**2)**(3.0/2))
+        r_init.append(float(line.split()[2])/r_s)
+        psi.append(float(line.split()[3])/(rho_s*g_n*r_s**2))
 
-file.close()
+    file.close()
 
-print('finished: units scaled out')
-print('start: change variables (r,psi)->(r,v)')
+    # print('finished: units scaled out')
+    # print('start: change variables (r,psi)->(r,v)')
 
-'''now we will change variable to r,psi-->r,v'''
+    '''now we will change variable to r,psi-->r,v'''
 
-r = []
-fe = []
-v = []
-# initialize counter for keeping track of for loop iterations
-count = 0
-j = 0
-# calculate values of v assuming energy of particle is binding energy psi
-for rad in r_init:
-    # set the initial energy value (which will be increased iteratively) equal
-    # to the binding energy
-    i = j
-    # this loop finds a velocity for increasing values of the energy for a
-    # given binding energy
-    while i < len(psi):
-        # the second term psi[j] is the energy of the particle; the first term
-        # psi[i] is the binding energy
-        vel = 2 * (psi[i] - psi[j])
-        vel = mp.sqrt(vel)
-        # data is written as r, v, fe
-        v.append(vel)
-        r.append(r_init[i])
-        fe.append(fe_init[j])
-        if j == 0:
-            count += 1
-        i += 1
-    j += 1
+    r = []
+    fe = []
+    v = []
+    # initialize counter for keeping track of for loop iterations
+    count = 0
+    j = 0
+    # calculate values of v assuming energy of particle is binding energy psi
+    for rad in r_init:
+        # set the initial energy value (which will be increased iteratively)
+        # to the binding energy
+        i = j
+        # this loop finds a velocity for increasing values of the energy for a
+        # given binding energy
+        while i < len(psi):
+            # the second term psi[j] is the energy of the particle;
+            # the first term psi[i] is the binding energy
+            vel = 2 * (psi[i] - psi[j])
+            vel = mp.sqrt(vel)
+            # data is written as r, v, fe
+            v.append(vel)
+            r.append(r_init[i])
+            fe.append(fe_init[j])
+            if j == 0:
+                count += 1
+            i += 1
+        j += 1
 
-# put everything in increasing order
-dat = np.array(list(zip(r, v, fe)))
-dat = dat[dat[:, 1].argsort()]
-dat = dat[dat[:, 0].argsort(kind='mergesort')]
-r, v, fe = dat.T
+    # put everything in increasing order
+    dat = np.array(list(zip(r, v, fe)))
+    dat = dat[dat[:, 1].argsort()]
+    dat = dat[dat[:, 0].argsort(kind='mergesort')]
+    r, v, fe = dat.T
 
-print('finished: change of variables completed')
+    # print('finished: change of variables completed')
 
-# save new array to outfile
-newfile = "fe_GC_NFW_nounits.txt"
-outfile = open(newfile, 'wb')
-np.savez(outfile, r = np.array(r), v = np.array(v), fe = np.array(fe))
-outfile.close()
+    # save new array to outfile
+    newfile = file+"_nounits.txt"
+    with open(newfile, 'wb') as outfile:
+        np.savez(outfile, r=np.array(r), v=np.array(v), fe=np.array(fe))

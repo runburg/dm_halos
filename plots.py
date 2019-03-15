@@ -30,11 +30,11 @@ with np.load("g_som.txt") as infile:
     g_som = infile['gsom']
     r = infile['r']
 
-with np.load("h_funcs.txt") as infile:
-    hsn = infile['hsn']
-    hpn = infile['hpn']
-    hdn = infile['hdn']
-    hsomn = infile['hsomn']
+with np.load("h_values.txt") as infile:
+    hsn = infile['hs']
+    hpn = infile['hp']
+    hdn = infile['hd']
+    hsomn = infile['hsom']
     radius = infile['radius']
 
 
@@ -87,14 +87,6 @@ plot.tick_params('y', which='both', direction='in', left=True, right=True)
 p.savefig("hfuncs.pdf", bbox_inches='tight')
 
 # h plot end behavior
-with np.load("h_funcs_zoom.txt") as infile:
-    hsn = infile['hsn']
-    hpn = infile['hpn']
-    hdn = infile['hdn']
-    hsomn = infile['hdsomn']
-    radius = infile['radius']
-p = plot.figure()
-
 
 swave = plot.plot(radius, hsn, '-', color=scolor, label=r"$s$-wave")
 pwave = plot.plot(radius, hpn, '-', color=pcolor, label=r"$p$-wave")

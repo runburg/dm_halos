@@ -1,8 +1,10 @@
 #!/bin/bash
 
-python3 undimensionalize_changeunits.py
-python3 g_swave.py
-python3 g_pwave.py
-python3 g_dwave.py
-python3 g_som.py
-python3 plotting.py
+DMfile = $(python3 main.py)
+for fil in *.txt;
+do
+  if ["$fil" -ne "$DMfile.txt" -a "$fil" -ne "${DMfile}_nounits.txt"]
+  then
+    mv "$fil" "test - $fil"
+  fi
+done
