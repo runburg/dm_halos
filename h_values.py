@@ -9,7 +9,7 @@ Created on Tue Dec 18 10:21:01 2018
 from scipy import integrate
 import numpy as np
 import matplotlib as mpl
-import hfuncs as h
+import h_funcs as h
 mpl.use('agg')
 
 

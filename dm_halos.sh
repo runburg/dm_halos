@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DMfile = $(python3 main.py)
+DMfile = "fe_GC_NFW"
 for fil in *.txt;
 do
   if ["$fil" -ne "$DMfile.txt" -a "$fil" -ne "${DMfile}_nounits.txt"]
@@ -9,5 +9,5 @@ do
   fi
 done
 
-mkdir $DMfile
+mkdir $DMfile/
 mv *.txt $DMfile/
