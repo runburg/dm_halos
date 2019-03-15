@@ -5,10 +5,10 @@
 # main.py for running dark matter halo distribution calculation
 #
 import undimensionalize_changeunits as undim
-import g_swave as gs
-import g_pwave as gp
-import g_dwave as gd
-import g_som as gsom
+import gfuncs.g_swave as gs
+import gfuncs.g_pwave as gp
+import gfuncs.g_dwave as gd
+import gfuncs.g_som as gsom
 import h_values as hval
 
 # file without extension

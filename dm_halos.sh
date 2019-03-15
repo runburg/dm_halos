@@ -8,3 +8,6 @@ do
     mv "$fil" "test - $fil"
   fi
 done
+
+mkdir $DMfile
+mv *.txt $DMfile/
