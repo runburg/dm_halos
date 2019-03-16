@@ -78,6 +78,6 @@ def undim(file, g_n, r_s, rho_s):
     # print('finished: change of variables completed')
 
     # save new array to outfile
-    newfile = file+"_nounits.txt"
+    newfile = str(file)+"_nounits.txt"
     with open(newfile, 'wb') as outfile:
         np.savez(outfile, r=np.array(r), v=np.array(v), fe=np.array(fe))
