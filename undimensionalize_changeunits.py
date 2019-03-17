@@ -20,7 +20,7 @@ def undim(file, g_n, r_s, rho_s):
     scale out units'''
     # first column is ignored, second column is f(E), third column is r, fourth
     # column is psi
-    file = open(file+".txt", 'r')
+    infile = open(file+".txt", 'r')
 
     # initial arrays
     fe_init = []
@@ -29,13 +29,13 @@ def undim(file, g_n, r_s, rho_s):
     v = []
 
     # scale out units from input file and store column values in ind. arrays
-    for line in file.readlines():
+    for line in infile.readlines():
         fe_init.append(float(line.split()[1])
                        * 2/rho_s*(rho_s*g_n*r_s**2)**(3.0/2))
         r_init.append(float(line.split()[2])/r_s)
         psi.append(float(line.split()[3])/(rho_s*g_n*r_s**2))
 
-    file.close()
+    infile.close()
 
     # print('finished: units scaled out')
     # print('start: change variables (r,psi)->(r,v)')
@@ -78,6 +78,6 @@ def undim(file, g_n, r_s, rho_s):
     # print('finished: change of variables completed')
 
     # save new array to outfile
-    newfile = str(file)+"_nounits.txt"
+    newfile = file + "_nounits.txt"
     with open(newfile, 'wb') as outfile:
         np.savez(outfile, r=np.array(r), v=np.array(v), fe=np.array(fe))

@@ -17,12 +17,10 @@ mp.dps = 50
 
 
 def gsom_wave(file):
-    infile = open(file+"_nounits.txt", 'rb')
-    npzfile = np.load(infile)
-    r = npzfile['r']
-    v = npzfile['v']
-    fe = npzfile['fe']
-    infile.close()
+    with np.load(file+"_nounits.txt", 'rb') as npzfile:
+        r = npzfile['r']
+        v = npzfile['v']
+        fe = npzfile['fe']
 
     # create a list of unique r values and how often they occur
     r_unique = np.unique(r)

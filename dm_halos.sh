@@ -1,11 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-DMfile = "fe_GC_NFW"
-for fil in *.txt;
-do
-  if ["$fil" -ne "$DMfile.txt" -a "$fil" -ne "${DMfile}_nounits.txt"]
-  then
-    mv "$fil" "test - $fil"
+
+DMfile="fe_GC_NFW"
+for fil in *.txt; do
+  if [[ "$fil" != "$DMfile.txt" && "$fil" != "${DMfile}_nounits.txt" ]]; then
+    mv "$fil" "$DMfile_$fil"
   fi
 done
 
