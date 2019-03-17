@@ -32,4 +32,7 @@ gsom.gsom_wave(file)
 print("finished som enh")
 hval.hval()
 
-print(file)
+with open("_parameters.txt") as outfile:
+    outfile.write("r_s: " + r_s)
+    outfile.write("rho_s: " + rho_s)
+    outfile.write("input file is: " + file)
