@@ -10,7 +10,7 @@ import numpy as np
 import mpmath as mp
 
 
-def undim(file, g_n, r_s, rho_s):
+def undim(file, g_n=float(4.325E-6), r_s=float(20.0), rho_s=float(8E6)):
     # print('start: reading data from file')
 
     # set working precision of decimal points

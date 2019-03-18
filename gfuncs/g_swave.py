@@ -53,4 +53,4 @@ def gs_wave(file):
         rf.append(rad)
 
     with open("g_s.txt", 'wb') as outfile:
-        np.savez(outfile, gs=np.array(g_swave), r=np.array(rf))
+        np.savez(outfile, g_s=np.array(g_swave), r=np.array(rf))

@@ -64,4 +64,4 @@ def gsom_wave(file):
 
     # save in g_som.txt
     with open("g_som.txt", 'wb') as outfile:
-        np.savez(outfile, gsom=np.array(g_som), r=np.array(rf))
+        np.savez(outfile, g_som=np.array(g_som), r=np.array(rf))

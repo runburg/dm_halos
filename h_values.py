@@ -14,6 +14,7 @@ mpl.use('agg')
 
 
 def hval():
+    h.import_g()
     '''h func computation'''
     # normalizations and f_values
     dst = integrate.quad(h.hts, 0, 50)[0]

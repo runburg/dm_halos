@@ -15,19 +15,19 @@ plot.rc('text', usetex=True)
 plot.rc('font', family='serif')
 
 with np.load("g_s.txt") as infile:
-    g_s = infile['gs']
+    g_s = infile['g_s']
     r = infile['r']
 
 with np.load("g_p.txt") as infile:
-    g_p = infile['gp']
+    g_p = infile['g_p']
     r = infile['r']
 
 with np.load("g_d.txt") as infile:
-    g_d = infile['gd']
+    g_d = infile['g_d']
     r = infile['r']
 
 with np.load("g_som.txt") as infile:
-    g_som = infile['gsom']
+    g_som = infile['g_som']
     r = infile['r']
 
 with np.load("h_values.txt") as infile:
