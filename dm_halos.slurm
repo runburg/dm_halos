@@ -12,4 +12,4 @@
 #SBATCH --mail-type ALL # this specifies what events you should get an email about ALL will alert you of job beginning, completion, failure etc
 source ~/.bash_profile #if you want to use modules or need environment variables use this if your shell is bash to load those
 module load lang/Python/3.5.1/python  #if you want to load a module use this and the above common with the module name you wanted loaded.
-python3 main.py
+python3 h_values.py
