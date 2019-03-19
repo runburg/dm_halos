@@ -65,3 +65,7 @@ def hval():
     with open("h_values.txt", 'wb') as outfile:
         np.savez(outfile, hst=np.array(hst), hs=np.array(hs), hp=np.array(
             hp), hd=np.array(hd), hsom=np.array(hsom), radius=np.array(yval))
+
+
+if __name__ == '__main__':
+    hval()
