@@ -25,7 +25,9 @@ mp.dps = 50
 g = {}
 gsfunc, gpfunc, gdfunc, gsomfunc = [0, 0, 0, 0]
 
-if __name__ == '__main__':
+
+def g_import():
+    global gsfunc, gpfunc, gdfunc, gsomfunc
     for key in ['g_s', 'g_p', 'g_d', 'g_som']:
         with np.load(key+'.txt', 'rb') as infile:
             g[key] = infile[key]
@@ -42,6 +44,11 @@ if __name__ == '__main__':
 
     gsomfunc = interpolate.interp1d(
         g['r'], g['g_som'], kind='cubic', fill_value='extrapolate')
+
+
+if __name__ == '__main__':
+    g_import()
+
 
 # -----------------------------------------------------------------------------
 # THEORETICAL S-WAVE
