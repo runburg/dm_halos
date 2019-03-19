@@ -12,7 +12,7 @@ import gfuncs.g_som as gsom
 import h_values as hval
 
 # file without extension
-file = "df_nfw"
+file = "fe_GC_NFW"
 # units of kpc/solar mass * (km/s)^2
 g_n = float(4.325E-6)
 # units of kpc
