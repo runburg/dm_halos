@@ -25,8 +25,7 @@ mp.dps = 50
 g = {}
 gsfunc, gpfunc, gdfunc, gsomfunc = [0, 0, 0, 0]
 
-
-def import_g():
+if __name__ == '__main__':
     for key in ['g_s', 'g_p', 'g_d', 'g_som']:
         with np.load(key+'.txt', 'rb') as infile:
             g[key] = infile[key]

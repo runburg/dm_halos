@@ -6,7 +6,7 @@ Created on Tue Dec 18 10:21:01 2018
 @author: runburg
 """
 
-from scipy import integrate
+from scipy import integrate, interpolate
 import numpy as np
 import matplotlib as mpl
 import h_funcs as h
@@ -14,7 +14,24 @@ mpl.use('agg')
 
 
 def hval():
-    h.import_g()
+    g = {}
+    gsfunc, gpfunc, gdfunc, gsomfunc = [0, 0, 0, 0]
+    for key in ['g_s', 'g_p', 'g_d', 'g_som']:
+        with np.load(key+'.txt', 'rb') as infile:
+            g[key] = infile[key]
+            g['r'] = infile['r']
+
+    gsfunc = interpolate.interp1d(
+        g['r'], g['g_s'], kind='cubic', fill_value='extrapolate')
+
+    gpfunc = interpolate.interp1d(
+        g['r'], g['g_p'], kind='cubic', fill_value='extrapolate')
+
+    gdfunc = interpolate.interp1d(
+        g['r'], g['g_d'], kind='cubic', fill_value='extrapolate')
+
+    gsomfunc = interpolate.interp1d(
+        g['r'], g['g_som'], kind='cubic', fill_value='extrapolate')
     '''h func computation'''
     # normalizations and f_values
     dst = integrate.quad(h.hts, 0, 50)[0]
