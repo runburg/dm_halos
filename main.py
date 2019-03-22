@@ -12,7 +12,7 @@ import gfuncs.g_som as gsom
 import h_values as hval
 
 # file without extension
-file = "fe_GC_NFW"
+file = "df_nfw"
 # units of kpc/solar mass * (km/s)^2
 g_n = float(4.325E-6)
 # units of kpc
@@ -32,7 +32,7 @@ gsom.gsom_wave(file)
 print("finished som enh")
 hval.hval()
 
-with open("_parameters.txt") as outfile:
+with open("parameters.txt", 'w') as outfile:
     outfile.write("r_s: " + r_s)
     outfile.write("rho_s: " + rho_s)
     outfile.write("input file is: " + file)

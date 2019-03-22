@@ -32,12 +32,13 @@ def hval():
     nsom = integrate.quad(lambda x: x**2*h.hsom(x), 0, 50)[0]
 
     with open('f_values.txt', 'a') as fvals:
-        fvals.write("F-values\n-----------------------------\n")
-        fvals.write("Theor. s-wave\t" + str(np.sqrt(nst/dst)))
-        fvals.write("\ns-wave\t" + str(np.sqrt(ns/ds)))
-        fvals.write("\np_wave\t" + str(np.sqrt(nP/dp)))
-        fvals.write("\nd-wave\t" + str(np.sqrt(nd/dd)))
-        fvals.write("\nsom.enh.\t" + str(np.sqrt(nsom/dsom)))
+        fvals.write("F-values\t|\th_n\n-----------------------------\n")
+        fvals.write("Theor. s-wave\t" + str(np.sqrt(nst/dst)) + "\t" + dst)
+        fvals.write("\ns-wave\t\t" + str(np.sqrt(ns/ds)) + "\t" + ds)
+        fvals.write("\np-wave\t\t" + str(np.sqrt(nP/dp)) + "\t" + dp)
+        fvals.write("\nd-wave\t\t" + str(np.sqrt(nd/dd)) + "\t" + dd)
+        fvals.write("\nsom.enh.\t" + str(np.sqrt(nsom/dsom))
+                    + "\t" + dsom + "\n")
 
     yval = np.logspace(-2.85, 2, num=500)
 
