@@ -33,12 +33,12 @@ def hval():
 
     with open('f_values.txt', 'a') as fvals:
         fvals.write("F-values\t|\th_n\n-----------------------------\n")
-        fvals.write("Theor. s-wave\t" + str(np.sqrt(nst/dst)) + "\t" + dst)
-        fvals.write("\ns-wave\t\t" + str(np.sqrt(ns/ds)) + "\t" + ds)
-        fvals.write("\np-wave\t\t" + str(np.sqrt(nP/dp)) + "\t" + dp)
-        fvals.write("\nd-wave\t\t" + str(np.sqrt(nd/dd)) + "\t" + dd)
+        fvals.write("Theor. s-wave\t" + str(np.sqrt(nst/dst)) + "\t" + str(dst))
+        fvals.write("\ns-wave\t\t" + str(np.sqrt(ns/ds)) + "\t" + str(ds))
+        fvals.write("\np-wave\t\t" + str(np.sqrt(nP/dp)) + "\t" + str(dp))
+        fvals.write("\nd-wave\t\t" + str(np.sqrt(nd/dd)) + "\t" + str(dd))
         fvals.write("\nsom.enh.\t" + str(np.sqrt(nsom/dsom))
-                    + "\t" + dsom + "\n")
+                    + "\t" + str(dsom) + "\n")
 
     yval = np.logspace(-2.85, 2, num=500)
 

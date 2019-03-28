@@ -33,6 +33,6 @@ print("finished som enh")
 hval.hval()
 
 with open("parameters.txt", 'w') as outfile:
-    outfile.write("r_s: " + r_s)
-    outfile.write("rho_s: " + rho_s)
+    outfile.write("r_s: " + str(r_s))
+    outfile.write("rho_s: " + str(rho_s))
     outfile.write("input file is: " + file)
