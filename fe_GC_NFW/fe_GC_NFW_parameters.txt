@@ -1,1 +1,1 @@
-r_s: 20.0rho_s: 8000000.0input file is: df_nfw
+r_s: 20.0rho_s: 8000000.0input file is: fe_GC_NFW

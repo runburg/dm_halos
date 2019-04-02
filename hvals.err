@@ -16,5 +16,3 @@
   probably gain from splitting up the interval and calling the integrator 
   on the subranges.  Perhaps a special-purpose integrator should be used.
   warnings.warn(msg, IntegrationWarning)
-/lus/scratch/software/lang/python/bin/3.5.1/lib/python3.5/site-packages/scipy/integrate/quadpack.py:364: IntegrationWarning: The integral is probably divergent, or slowly convergent.
-  warnings.warn(msg, IntegrationWarning)
