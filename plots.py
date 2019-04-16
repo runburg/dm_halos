@@ -11,6 +11,12 @@ import matplotlib as mpl
 import matplotlib.pyplot as plot
 
 mpl.rcParams['lines.linewidth'] = 1
+mpl.rcParams['axes.titlesize'] = 'large'
+mpl.rcParams['xtick.labelsize'] = 'x-large'
+mpl.rcParams['ytick.labelsize'] = 'x-large'
+mpl.rcParams['legend.fontsize'] = 'x-large'
+mpl.rcParams['axes.labelsize'] = 'xx-large'
+
 plot.rc('text', usetex=True)
 plot.rc('font', family='serif')
 
@@ -53,7 +59,7 @@ plot.xlim(left=g['r'][0], right=g['r'][o-1])
 leg = plot.legend(frameon=False, markerscale=50)
 for line in leg.get_lines():
     line.set_linewidth(6)
-plot.tick_params('x', direction='in', bottom=True, top=True)
+plot.tick_params('x', which='both', direction='in', bottom=True, top=True)
 plot.tick_params('y', which='both', direction='in', left=True, right=True)
 
 p.savefig(file+'/'+file+"_gvalues.pdf", bbox_inches="tight")
@@ -73,7 +79,7 @@ plot.yscale('log')
 o = -100
 plot.ylim(bottom=float(hdn[o]), top=float(hsomn[0]))
 plot.xlim(left=radius[0], right=radius[o])
-leg = plot.legend(frameon=False, markerscale=50)
+leg = plot.legend(frameon=False, markerscale=50, loc=3)
 for line in leg.get_lines():
     line.set_linewidth(6)
 plot.tick_params('x', which='both', direction='in', bottom=True, top=True)
@@ -96,7 +102,7 @@ plot.yscale('log')
 o = 200
 plot.ylim(bottom=float(hdn[-1]), top=float(hdn[o])+1)
 plot.xlim(left=radius[o], right=radius[-1])
-leg = plot.legend(frameon=False, markerscale=50)
+leg = plot.legend(frameon=False, markerscale=50, loc=3)
 for line in leg.get_lines():
     line.set_linewidth(6)
 plot.tick_params('x', which='both', direction='in', bottom=True, top=True)
