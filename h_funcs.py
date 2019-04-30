@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 15 12:29:06 2019
 
-@author: runburg
-"""
+"""Define h functs for dm_halos project."""
+
 from scipy import integrate, interpolate
 import numpy as np
 import mpmath as mp
@@ -27,9 +25,10 @@ gsfunc, gpfunc, gdfunc, gsomfunc = [0, 0, 0, 0]
 
 
 def g_import():
+    """Globally import all g functions."""
     global gsfunc, gpfunc, gdfunc, gsomfunc
     for key in ['g_s', 'g_p', 'g_d', 'g_som']:
-        with np.load(key+'.txt', 'rb') as infile:
+        with np.load('./df_nfw/df_nfw_'+key+'.txt', 'rb') as infile:
             g[key] = infile[key]
             g['r'] = infile['r']
 
@@ -56,16 +55,18 @@ if __name__ == '__main__':
 
 
 def rho(x):
+    """Return the density function value."""
     return 1/(mp.mpf(x)*(1+mp.mpf(x))**2)
 
 
 def gtfunc(x):
+    """Return the theoretical g_s."""
     return rho(x) * rho(x)
 
 
 def hts(y):
-    return y * mp.quad(lambda x: float(gtfunc(x))/(mp.sqrt(1-(y/x)**2)),
-                       [y, g['r'][-1]])
+    """Return the theoretical h_s."""
+    return mp.quad(lambda x: float(gtfunc(x))/(mp.sqrt(1-(y/x)**2)), [y,  g['r'][-1]])
 
 
 # -----------------------------------------------------------------------------
@@ -74,10 +75,10 @@ def hts(y):
 
 
 def hs(y):
+    """Return the computed h_s."""
     # divs gives the divergences (at interpolation points)
     divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
-    return y * integrate.quad(lambda x: gsfunc(x)/(np.sqrt(1-(y/x)**2)), y,
-                              g['r'][-1], points=divs, limit=len(g['r']))[0]
+    return integrate.quad(lambda x: gsfunc(x)/(np.sqrt(1-(y/x)**2)), y, g['r'][-1], points=divs, limit=len(g['r']))[0]
 
 
 # -----------------------------------------------------------------------------
@@ -86,9 +87,9 @@ def hs(y):
 
 
 def hp(y):
+    """Return h_p."""
     divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
-    return y * integrate.quad(lambda x: gpfunc(x)/(np.sqrt(1-(y/(x))**2)),
-                              y, g['r'][-1], points=divs, limit=len(g['r']))[0]
+    return integrate.quad(lambda x: gpfunc(x)/(np.sqrt(1-(y/(x))**2)), y, g['r'][-1], points=divs, limit=len(g['r']))[0]
 
 
 # -----------------------------------------------------------------------------
@@ -97,9 +98,9 @@ def hp(y):
 
 
 def hd(y):
+    """Return h_d."""
     divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
-    return y * integrate.quad(lambda x: gdfunc(x)/(np.sqrt(1-(y/(x))**2)),
-                              y, g['r'][-1], points=divs, limit=len(g['r']))[0]
+    return integrate.quad(lambda x: gdfunc(x)/(np.sqrt(1-(y/(x))**2)), y, g['r'][-1], points=divs, limit=len(g['r']))[0]
 
 
 # -----------------------------------------------------------------------------
@@ -108,6 +109,6 @@ def hd(y):
 
 
 def hsom(y):
+    """Return h_som."""
     divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
-    return y * integrate.quad(lambda x: gsomfunc(x)/(np.sqrt(1-(y/x)**2)),
-                              y, g['r'][-1], points=divs, limit=len(g['r']))[0]
+    return integrate.quad(lambda x: gsomfunc(x)/(np.sqrt(1-(y/x)**2)), y, g['r'][-1], points=divs, limit=len(g['r']))[0]

@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Dec 18 10:21:01 2018
 
-@author: runburg
-"""
+"""Compute h and f values for dm_halos project."""
 
 from scipy import integrate
 import numpy as np
@@ -16,9 +13,12 @@ g = {}
 gsfunc, gpfunc, gdfunc, gsomfunc = [0, 0, 0, 0]
 
 
+hi = 45
+
+
 def hval():
+    """H func computation."""
     h.g_import()
-    '''h func computation'''
     # normalizations and f_values
     dst = integrate.quad(h.hts, 0, 50)[0]
     nst = integrate.quad(lambda x: x**2*h.hts(x), 0, 50)[0]
@@ -32,13 +32,12 @@ def hval():
     nsom = integrate.quad(lambda x: x**2*h.hsom(x), 0, 50)[0]
 
     with open('f_values.txt', 'a') as fvals:
-        fvals.write("F-values\t|\th_n\n-----------------------------\n")
-        fvals.write("Theor. s-wave\t" + str(np.sqrt(nst/dst)) + "\t" + str(dst))
-        fvals.write("\ns-wave\t\t" + str(np.sqrt(ns/ds)) + "\t" + str(ds))
-        fvals.write("\np-wave\t\t" + str(np.sqrt(nP/dp)) + "\t" + str(dp))
-        fvals.write("\nd-wave\t\t" + str(np.sqrt(nd/dd)) + "\t" + str(dd))
-        fvals.write("\nsom.enh.\t" + str(np.sqrt(nsom/dsom))
-                    + "\t" + str(dsom) + "\n")
+        fvals.write("ang. size\t|\th_n\n-----------------------------\n")
+        fvals.write("Theor. s-wave\t" + str(nst/dst) + "\t" + str(dst))
+        fvals.write("\ns-wave\t\t" + str(ns/ds) + "\t" + str(ds))
+        fvals.write("\np-wave\t\t" + str(nP/dp) + "\t" + str(dp))
+        fvals.write("\nd-wave\t\t" + str(nd/dd) + "\t" + str(dd))
+        fvals.write("\nsom.enh.\t" + str(nsom/dsom) + "\t" + str(dsom) + "\n")
 
     yval = np.logspace(-2.85, 2, num=500)
 
