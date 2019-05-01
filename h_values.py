@@ -20,15 +20,15 @@ def hval():
     """H func computation."""
     h.g_import()
     # normalizations and f_values
-    dst = integrate.quad(h.hts, 0, 50)[0]
+    dst = integrate.quad(lambda x: x * h.hts(x), 0, 50)[0]
     nst = integrate.quad(lambda x: x**2*h.hts(x), 0, 50)[0]
-    ds = integrate.quad(h.hs, 0, 50)[0]
+    ds = integrate.quad(lambda x: x * h.hs(x), 0, 50)[0]
     ns = integrate.quad(lambda x: x**2*h.hs(x), 0, 50)[0]
-    dp = integrate.quad(h.hp, 0, 50)[0]
+    dp = integrate.quad(lambda x: x * h.hp(x), 0, 50)[0]
     nP = integrate.quad(lambda x: x**2*h.hp(x), 0, 50)[0]
-    dd = integrate.quad(h.hd, 0, 50)[0]
+    dd = integrate.quad(lambda x: x * h.hd(x), 0, 50)[0]
     nd = integrate.quad(lambda x: x**2*h.hd(x), 0, 50)[0]
-    dsom = integrate.quad(h.hsom, 0, 50)[0]
+    dsom = integrate.quad(lambda x: x * h.hsom(x), 0, 50)[0]
     nsom = integrate.quad(lambda x: x**2*h.hsom(x), 0, 50)[0]
 
     with open('f_values.txt', 'a') as fvals:

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jan 15 20:53:54 2019
+Som. enh. velocity integration for dm project.
 
-@author: runburg
+The annihilation scheme of sommerfeld enhancement.
 """
 
 from scipy import integrate, interpolate
@@ -17,6 +17,7 @@ mp.dps = 50
 
 
 def gsom_wave(file):
+    """Integrate over velocity distribution for som. enh. dm."""
     with np.load(file+"_nounits.txt", 'rb') as npzfile:
         r = npzfile['r']
         v = npzfile['v']

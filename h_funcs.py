@@ -41,6 +41,7 @@ def g_import():
     gdfunc = interpolate.interp1d(
         g['r'], g['g_d'], kind='cubic', fill_value='extrapolate')
 
+    g['g_som'][0] = g['g_som'][1]+g['g_som'][2]
     gsomfunc = interpolate.interp1d(
         g['r'], g['g_som'], kind='cubic', fill_value='extrapolate')
 
