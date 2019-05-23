@@ -52,6 +52,10 @@ def hval():
         np.savez(outfile, hst=np.array(hst), hs=np.array(hs), hp=np.array(
             hp), hd=np.array(hd), hsom=np.array(hsom), radius=np.array(yval))
 
+    with open("j_thetas.txt", 'wb') as outfile:
+        np.savez(outfile, jst=np.array(hst), js=np.array(hs), jp=np.array(
+            hp), jd=np.array(hd), jsom=np.array(hsom), theta=np.array(yval))
+
 
 if __name__ == '__main__':
     hval()

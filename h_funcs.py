@@ -18,7 +18,6 @@ import mpmath as mp
 # exact precision of mp functions
 mp.dps = 50
 
-
 # import relevant files
 g = {}
 gsfunc, gpfunc, gdfunc, gsomfunc = [0, 0, 0, 0]

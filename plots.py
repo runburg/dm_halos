@@ -78,7 +78,10 @@ plot.tick_params('y', which='both', direction='in', left=True, right=True)
 p.savefig(file+'/'+file+"_p2values.pdf", bbox_inches="tight")
 
 # h plot
+xx = 7
+yy = 5.5
 p = plot.figure()
+p.set_size_inches(xx, yy)
 som = plot.plot(radius, hsomn, '-', color=somcolor, label=somlabel)
 swave = plot.plot(radius, hsn, '-', color=scolor, label=slabel)
 pwave = plot.plot(radius, hpn, '-', color=pcolor, label=plabel)
@@ -102,6 +105,7 @@ p.savefig(file+'/'+file+"_jfuncs_log.pdf", bbox_inches='tight')
 
 # h plot end behavior
 p = plot.figure()
+p.set_size_inches(xx, yy)
 som = plot.plot(radius, hsomn, '-', color=somcolor, label=somlabel)
 swave = plot.plot(radius, hsn, '-', color=scolor, label=slabel)
 pwave = plot.plot(radius, hpn, '-', color=pcolor, label=plabel)
@@ -112,9 +116,9 @@ plot.ylabel(r"$\tilde{J}_{S(n)}(\tilde{\theta})/\tilde{J}^{tot}_{S(n)}$")
 plot.xscale('log')
 plot.yscale('log')
 
-o = 250
+o = 190
 plot.ylim(bottom=float(hdn[-1]), top=float(hdn[o])+1)
-plot.xlim(left=radius[o], right=radius[-1])
+plot.xlim(left=radius[o], right=radius[-1]+1)
 leg = plot.legend(frameon=False, markerscale=50, loc=3)
 for line in leg.get_lines():
     line.set_linewidth(6)

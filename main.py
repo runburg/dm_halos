@@ -4,6 +4,9 @@
 # Date: 15-03-2019 11:17
 # main.py for running dark matter halo distribution calculation
 #
+
+"""main script for computing subhalo."""
+
 import undimensionalize_changeunits as undim
 import gfuncs.g_swave as gs
 import gfuncs.g_pwave as gp
