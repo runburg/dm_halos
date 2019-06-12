@@ -53,8 +53,8 @@ def hval():
             hp), hd=np.array(hd), hsom=np.array(hsom), radius=np.array(yval))
 
     with open("j_thetas.txt", 'wb') as outfile:
-        np.savez(outfile, jst=np.array(hst), js=np.array(hs), jp=np.array(
-            hp), jd=np.array(hd), jsom=np.array(hsom), theta=np.array(yval))
+        np.savez(outfile, jst=np.array(hst)*dst, js=np.array(hs)*hs, jp=np.array(
+            hp)*dp, jd=np.array(hd)*dd, jsom=np.array(hsom)*dsom, theta=np.array(yval))
 
 
 if __name__ == '__main__':

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-"""Plotting j-value averages.
+"""
+Plotting j-value averages.
 
 Author: Jack Runburg
 Date: 21-05-2019 12:10
 
-
+Given the j-factors computed in j_factors.py, plots average values and sigma bands around the central line.
+Produce plots comparing individual annihilation schemes and all four for every dwarf.
 """
 
 import numpy as np
@@ -56,15 +57,10 @@ wavedict = {
 
 wavelabeldict = {
     's': r"$s$-wave, $n=0$",
-    'p': r"$s$-wave, $n=2$",
+    'p': r"$p$-wave, $n=2$",
     'd': r"$d$-wave, $n=4$",
     'som': r"Sommerfeld, $n=-1$"
 }
-# dcolor = 'xkcd:peach'
-# somcolor = 'xkcd:light turquoise'
-
-# dlabel = r"$d$-wave, $n=4$"
-# somlabel = r"Sommerfeld, $n=-1$"
 
 for wave in ['s', 'p', 'd', 'som']:
     ymax = 0
@@ -96,7 +92,7 @@ for wave in ['s', 'p', 'd', 'som']:
         plot.fill_between(thetas, ave_jvals, low_jvals, facecolor=colordict[dwarf], alpha=.4)
 
     plot.xlabel(r"$\theta[^{\circ}]$")
-    plot.ylabel(r"$J_{"+wave+r"}(\theta)$")
+    plot.ylabel(r"$J_{"+wave+r"}(\theta),\,[M_\odot^2kpc^{-5}]$")
     plot.xscale('log')
     plot.yscale('log')
     plot.tick_params('x', which='both', direction='in', bottom=True, top=True)
@@ -141,7 +137,7 @@ for dwarf in dwarflist:
         plot.fill_between(thetas, ave_jvals, low_jvals, facecolor=wavedict[wave], alpha=.4)
 
     plot.xlabel(r"$\theta[^{\circ}]$")
-    plot.ylabel(r"$J(\theta)$ for " + dwarf)
+    plot.ylabel(r"$J(\theta),\, [M_\odot^2kpc^{-5}]$ for " + dwarf)
     plot.xscale('log')
     plot.yscale('log')
     plot.tick_params('x', which='both', direction='in', bottom=True, top=True)

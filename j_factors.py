@@ -80,34 +80,40 @@ jdfunc = interpolate.interp1d(tildetheta, jd, kind='cubic', fill_value='extrapol
 jsomfunc = interpolate.interp1d(tildetheta, jsom, kind='cubic', fill_value='extrapolate')
 
 # dwarf name
-dwarflist = ['draco', 'segue']
+dwarflist = ['draco1', 'segue1']
 for dwarf in dwarflist:
-    data = np.load('./j_factors/dwarfs/'+dwarf+'1_chain.npy')
+    data = np.load('./j_factors/dwarfs/'+dwarf+'_chain.npy')
 
     ave_jvals, up_jvals, low_jvals = [], [], []
-    weightsum = 0
     thetas = np.logspace(-5, np.log10(np.pi/180*3), num=50)
     for wave in ['s', 'p', 'd', 'som']:
         ave_jvals, low_jvals, up_jvals = [], [], []
         for t in thetas:
             temp_j = []
+            weightsum = 0
             for x in data:
                 if wave == 's':
                     temp_j.append([x[0], jsfunc(t*x[1]/(10**x[2]))*2*10**x[2]*(10**x[3])**2])
                 if wave == 'p':
-                    temp_j.append([x[0], jpfunc(t*x[1]/(10**x[2]))*2*10**x[2]*(10**x[3])**2*4 * np.pi * float(4.325E-6) * 10**x[3] * (10**x[2])**2 / (299792458)**2])
+                    temp_j.append([x[0], jpfunc(t*x[1]/(10**x[2]))*2*10**x[2]*(10**x[3])**2*4 * np.pi * float(4.325E-6) * 10**x[3] * (10**x[2])**2 / (299792.458)**2])
                 if wave == 'd':
-                    temp_j.append([x[0], jdfunc(t*x[1]/(10**x[2]))*2*10**x[2]*(10**x[3])**2*(4 * np.pi * float(4.325E-6) * 10**x[3] * (10**x[2])**2 / (299792458)**2)**2])
+                    temp_j.append([x[0], jdfunc(t*x[1]/(10**x[2]))*2*10**x[2]*(10**x[3])**2*(4 * np.pi * float(4.325E-6) * 10**x[3] * (10**x[2])**2 / (299792.458)**2)**2])
                 if wave == 'som':
-                    temp_j.append([x[0], jsomfunc(t*x[1]/(10**x[2]))*2*10**x[2]*(10**x[3])**2/np.sqrt(4 * np.pi * float(4.325E-6) * 10**x[3] * (10**x[2])**2 / (299792458)**2)])
+                    temp_j.append([x[0], jsomfunc(t*x[1]/(10**x[2]))*2*10**x[2]*(10**x[3])**2/np.sqrt(4 * np.pi * float(4.325E-6) * 10**x[3] * (10**x[2])**2 / (299792.458)**2)])
+                weightsum += x[0]
             temp_j = np.array(temp_j)
-            temp_ave = weighted_average(temp_j)
-            ave_jvals.append(temp_ave)
-            low_jvals.append(sigma_lower(temp_j, temp_ave))
-            up_jvals.append(temp_ave+weighted_sd(temp_j))
-            # sigma_upper(temp_j, temp_ave)
+            temp_j = temp_j[temp_j[:, 1].argsort()]
+            temp_j[:, 0] = np.cumsum(temp_j, axis=0)[:, 0]
+            temp_j = np.divide(temp_j, np.array([weightsum, 1]))
+            ave_jvals.append(temp_j[np.searchsorted(temp_j[:, 0], 0.5, side='left')][1])
+            low_jvals.append(temp_j[np.searchsorted(temp_j[:, 0], .5-.34, side='left')][1])
+            up_jvals.append(temp_j[np.searchsorted(temp_j[:, 0], .5+.34, side='right')][1])
+        #     temp_ave = weighted_average(temp_j)
+        #     ave_jvals.append(temp_ave)
+        #     low_jvals.append(sigma_lower(temp_j, temp_ave))
+        #     up_jvals.append(sigma_upper(temp_j, temp_ave))
+        #     # sigma_upper(temp_j, temp_ave)
+        #
         with open("./j_factors/j_ave/j_ave_thetas_"+dwarf+"_"+wave+".txt", 'wb') as outfile:
             np.savez(outfile, ave_jvals=np.array(ave_jvals), up_jvals=np.array(up_jvals), low_jvals=np.array(
                 low_jvals), thetas=np.array(thetas))
-# np.sqrt(4 * np.pi * float(4.325E-6) * x[2] * x[1]**2 / (299792458)**2)
-# z = 1.96/np.sqrt(len(data))
