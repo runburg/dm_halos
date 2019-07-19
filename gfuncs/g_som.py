@@ -49,20 +49,23 @@ def gsom_wave(file):
                 break
         for vv, ffee in zip(v_temp, fe_temp):
             x = np.array(v_temp).astype(float)
-            y = np.array([vvv**2*fffeee for (vvv, fffeee)
-                          in zip(v_temp, fe_temp)])
+            y = np.array([vvv*fffeee for (vvv, fffeee) in zip(v_temp, fe_temp)])
             if len(x) > 1 and len(y) > 1:
-                v2int = interpolate.interp1d(
-                    x, y, kind='linear', fill_value='extrapolate')
-            func.append(ffee*vv*integrate.quad(v2int, vv, v_temp[-1])[0])
+                v2int = interpolate.interp1d(x, y, kind='cubic', fill_value='extrapolate')
+            func.append(ffee*vv**2*integrate.quad(v2int, vv, v_temp[-1], limit=500)[0])
         # stores the value of the velocity integration
         # this will change when not doing s-wave
-        g_som.append(32*mp.pi**2*integrate.simps(func, v_temp))
+        vint = interpolate.interp1d(v_temp, func, kind='cubic', fill_value='extrapolate')
+        g_som.append(32*mp.pi**2*integrate.quad(vint, 0.0000000000001, v_temp[-1], limit=500, divs=v_temp)[0])
         fe_temp.clear()
         v_temp.clear()
         func.clear()
         rf.append(rad)
 
     # save in g_som.txt
-    with open("g_som.txt", 'wb') as outfile:
+    with open("/Users/runburg/github/dm_halos/df_nfw/df_nfw_g_som.txt", 'wb') as outfile:
         np.savez(outfile, g_som=np.array(g_som), r=np.array(rf))
+
+
+if __name__ == '__main__':
+    gsom_wave('/Users/runburg/github/dm_halos/df_nfw/df_nfw')

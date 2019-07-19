@@ -24,7 +24,7 @@ r_s = float(20.0)
 rho_s = float(8E6)
 
 undim.undim(file, g_n, r_s, rho_s)
-print("firnished undim")
+print("finished undim")
 gs.gs_wave(file)
 print("finished s wave")
 gp.gp_wave(file)

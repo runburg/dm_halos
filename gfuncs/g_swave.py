@@ -6,7 +6,7 @@ Created on Thu Jan 10 19:44:24 2019
 @author: runburg
 """
 
-from scipy import integrate
+from scipy import integrate, interpolate
 import numpy as np
 import mpmath as mp
 
@@ -17,6 +17,7 @@ import mpmath as mp
 
 
 def gs_wave(file):
+    """Perform transformation to function of velocity and radius."""
     with np.load(file+"_nounits.txt", 'rb') as npzfile:
         r = npzfile['r']
         v = npzfile['v']
@@ -47,10 +48,20 @@ def gs_wave(file):
                 break
         # stores the value of the velocity integration
         # this will change when not doing s-wave
-        g_swave.append(16*mp.pi**2*(integrate.simps(func, v_temp))**2)
+        vels = np.array(v_temp).astype(np.float)
+        if len(v_temp) > 3:
+            g_sfunc = interpolate.interp1d(vels, func, kind='cubic', fill_value='extrapolate')
+            g_swave.append(16*np.pi**2*integrate.quad(g_sfunc, 0, vels[-1], points=vels, limit=100*len(v_temp))[0]**2)
+        # print('{}\t{}\t{}'.format(len(v_temp), v_temp[0], v_temp[-1]))
+        else:
+            g_swave.append(16*mp.pi**2*(integrate.simps(func, v_temp))**2)
         v_temp.clear()
         func.clear()
         rf.append(rad)
 
-    with open("g_s.txt", 'wb') as outfile:
+    with open("/Users/runburg/github/dm_halos/df_nfw/df_nfw_g_s.txt", 'wb') as outfile:
         np.savez(outfile, g_s=np.array(g_swave), r=np.array(rf))
+
+
+if __name__ == '__main__':
+    gs_wave('/Users/runburg/github/dm_halos/df_nfw/df_nfw')

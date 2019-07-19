@@ -1,0 +1,5 @@
+__pycache__
+outdated/
+.DS_Store
+*.err
+*.out

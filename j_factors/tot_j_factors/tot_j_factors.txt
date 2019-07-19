@@ -1,5 +1,6 @@
 # median j factors for given wave given as [j-sigma, j, j+sigma]
 # the bounds used are [0.5, 10]
+# #############################
 # dwarf		wave	J(0.5)	J_tot
 aquarius2	s	[array([17.73486973, 18.31545238, 18.97188915]), array([17.97169358, 18.61561401, 19.35226846])]
 aquarius2	p	[array([10.38717775, 11.34920678, 12.43934079]), array([10.68072883, 11.67586345, 12.81224065])]

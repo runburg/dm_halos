@@ -78,7 +78,7 @@ def hs(y):
     """Return the computed h_s."""
     # divs gives the divergences (at interpolation points)
     divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
-    return integrate.quad(lambda x: gsfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000001, g['r'][-1], points=divs, limit=len(g['r']))[0]
+    return integrate.quad(lambda x: gsfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000001, g['r'][-1], points=divs, limit=100*len(g['r']))[0]
 
 
 # -----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ def hs(y):
 def hp(y):
     """Return h_p."""
     divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
-    return integrate.quad(lambda x: gpfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000001, g['r'][-1], points=divs, limit=len(g['r']))[0]
+    return integrate.quad(lambda x: gpfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000001, g['r'][-1], points=divs, limit=100*len(g['r']))[0]
 
 
 # -----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ def hp(y):
 def hd(y):
     """Return h_d."""
     divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
-    return integrate.quad(lambda x: gdfunc(x)/(np.sqrt(1-(y/(x))**2)), y*1.00000001, g['r'][-1], points=divs, limit=len(g['r']))[0]
+    return integrate.quad(lambda x: gdfunc(x)/(np.sqrt(1-(y/(x))**2)), y*1.00000001, g['r'][-1], points=divs, limit=100*len(g['r']))[0]
 
 
 # -----------------------------------------------------------------------------
@@ -111,4 +111,4 @@ def hd(y):
 def hsom(y):
     """Return h_som."""
     divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
-    return integrate.quad(lambda x: gsomfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000001, g['r'][-1], points=divs, limit=len(g['r']))[0]
+    return integrate.quad(lambda x: gsomfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000000001, g['r'][-1], points=divs, limit=10*len(g['r']))[0]
