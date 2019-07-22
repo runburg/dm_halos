@@ -27,7 +27,7 @@ def g_import():
     """Globally import all g functions."""
     global gsfunc, gpfunc, gdfunc, gsomfunc
     for key in ['g_s', 'g_p', 'g_d', 'g_som']:
-        with np.load('./df_nfw/df_nfw_'+key+'.txt', 'rb') as infile:
+        with np.load('./df_nfw/df_nfw_'+key+'.txt', 'rb', allow_pickle=True) as infile:
             g[key] = infile[key]
             g['r'] = infile['r']
 

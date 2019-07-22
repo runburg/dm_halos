@@ -33,21 +33,54 @@ def sorted_j_factors(angle_jfacs):
 
 def error_plot(axs, data, offset=0, color='r', label=None, ec=0, mec=None):
     """Generate a scatterplot with error bars for the given j-factor data."""
-    ave = data[:, 3].astype(np.float)
-    low = ave - data[:, 2].astype(np.float)
-    high = data[:, 4].astype(np.float) - ave
+    try:
+        ave = data[:, 3].astype(np.float)
+        low = ave - data[:, 2].astype(np.float)
+        high = data[:, 4].astype(np.float) - ave
+    except IndexError:
+        ave = data[3].astype(np.float)
+        low = [ave - data[2].astype(np.float)]
+        high = [data[4].astype(np.float) - ave]
+
 
     try:
         x = data[:, 0].astype(np.float) + offset
     except ValueError:
         x = data[:, 0]
-    finally:
-        axs.errorbar(x, ave, yerr=[low, high], fmt='D', ecolor=ec, mec=mec, color=color, mew=1.5, capsize=5, elinewidth=2, label=label)
+    except IndexError:
+        x = data[0].astype(np.float) + offset
+
+    axs.errorbar(x, ave, yerr=[low, high], fmt='D', ecolor=ec, mec=mec, color=color, mew=1.5, capsize=5, elinewidth=2, label=label)
 
 
 def fix_names(name_list, get_dict=False):
     """Fix names for plotting of dwarfs."""
-    name_dict = {'ursamajor2': 'Ursa Major II', 'willman1': 'Willman I', 'horologium1_k15': 'Horologium I, k15', 'segue1': 'Segue I', 'comaberenices': 'Coma Berenices', 'tucana2_k15': 'Tucana II, k15', 'reticulum2_k15': 'Reticulum II, k15', 'reticulum2_des': 'Reticulum II, des', 'draco1': 'Draco I', 'tucana2_des': 'Tucana II, des', 'hydrus1': 'Hydrus I', 'horologium1_des': 'Horologium I, des', 'ursaminor': 'Ursa Minor', 'sculptor': 'Sculptor', 'carina2': 'Carina II', 'aquarius2': 'Aquarius II', 'bootes1': 'Bootes I', 'ursamajor1': 'Ursa Major I', 'fornax': 'Fornax', 'canesvenatici2': 'Canes Venatici II', 'carina': 'Carina', 'sextans': 'Sextans', 'leo2': 'Leo II', 'leo1': 'Leo I', 'canesvenatici1': 'Canes Venatici I', 'sagittarius2': 'Sagittarius II', 'hercules': 'Hercules', 'crater2': 'Crater II'}
+    name_dict = {
+    'ursamajor2': 'Ursa Major II',
+    'willman1': 'Willman I',
+    'horologium1_k15': 'Horologium I',
+    'segue1': 'Segue I',
+    'comaberenices': 'Coma Berenices',
+    'tucana2_k15': 'Tucana II',
+    'reticulum2_k15': 'Reticulum II',
+    'draco1': 'Draco I',
+    'hydrus1': 'Hydrus I',
+    'ursaminor': 'Ursa Minor',
+    'sculptor': 'Sculptor',
+    'carina2': 'Carina II',
+    'aquarius2': 'Aquarius II',
+    'bootes1': 'Bootes I',
+    'ursamajor1': 'Ursa Major I',
+    'fornax': 'Fornax',
+    'canesvenatici2': 'Canes Venatici II',
+    'carina': 'Carina',
+    'sextans': 'Sextans',
+    'leo2': 'Leo II',
+    'leo1': 'Leo I',
+    'canesvenatici1': 'Canes Venatici I',
+    'sagittarius2': 'Sagittarius II',
+    'hercules': 'Hercules',
+    'crater2': 'Crater II'}
 
     if get_dict:
         return name_dict
@@ -72,8 +105,8 @@ def plot_all_dwarfs(infile):
 
     fig, ax = plt.subplots(figsize=(25, 25))
 
-    # for errorcolor, angle_jfacs, a in zip(['xkcd:slate grey', 'xkcd:black'], infile, [r"$0.5^\circ$", r"$10^\circ$"]):
-    for errorcolor, angle_jfacs, a in zip(['xkcd:black'], infile, [r"$10^\circ$"]):
+    for errorcolor, angle_jfacs, a in zip(['xkcd:slate grey', 'xkcd:black'], infile, [r"$0.5^\circ$", r"$10^\circ$"]):
+    # for errorcolor, angle_jfacs, a in zip(['xkcd:black'], infile, [r"$10^\circ$"]):
         jfacs = np.load(angle_jfacs)
         jfacs[:, 0] = fix_names(jfacs[:, 0])
 
@@ -111,7 +144,7 @@ def lighten_color(color, amount=0.5):
     """
     Lightens the given color by multiplying (1-luminosity) by the given amount.
 
-    Input can be matplotlib color string, hex string, or RGB tuple.
+    Input can be matplotlib color string, hex string, or RGB tuple. Make amount > 1 to darken.
 
     Examples:
     >> lighten_color('g', 0.3)
@@ -135,6 +168,8 @@ def compare_plot(ax, data, colors, labels):
     for ioffset, (d, c, l) in enumerate(zip(data, colors, labels), start=start):
         try:
             d[:, 0] = set_x_value_names(d[:, 0])
+        except IndexError:
+            d[0] = set_x_value_names([d[0]])[0]
         except KeyError:
             pass
         error_plot(ax, d, offset=ioffset/(2*len(data)), color=c, label=l, ec=lighten_color(c, amount=1.5), mec=lighten_color(c, amount=1.5))
@@ -175,9 +210,9 @@ def compare_to_others_plot():
     others_data = np.load('./j_factors/compare_values_j_factors.npz')
 
     # s wave, to 0.5 degree
-    data = [js, others_data['geringer2015'], others_data['pace2018']]
-    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach']
-    labels = ['Our analysis', '1408.0002', '1802.06811']
+    data = [js, others_data['geringer2015'], others_data['pace2018'], others_data['walker2015'], others_data['caldwell2016'], others_data['koposov2018']]
+    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5), 'xkcd:purple', 'xkcd:hot pink']
+    labels = ['Our analysis', '1408.0002', '1802.06811', '1511.06296', '1612.06398', '1804.06430']
 
     compare_plot(ax, data, colors, labels)
     plt.title(r"Comparison of $J$-factors at $0.5^\circ$ for $s$-wave annihilation")
@@ -224,6 +259,6 @@ if __name__ == '__main__':
         25: '25',
         50: '50'
     }
-    plot_all_dwarfs(["./j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[ub] + ".npy" for ub in bounds])
+    plot_all_dwarfs([f"/Users/runburg/github/dm_halos/j_factors/tot_j_factors/tot_j_fac_inclusive_{angledict[ub]}.npy" for ub in bounds])
     # sorted_j_factors("./j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[10] + ".npy")
     compare_to_others_plot()

@@ -59,8 +59,9 @@ bergstrom2017 = np.array([
 ])
 bergstrom2017_s = bergstrom2017[:, [0, 1, 5, 4, 3]]
 bergstrom2017_som = bergstrom2017[:, [0, 2, 8, 7, 6]]
-bergstrom2017_som[:, [2, 3, 4]] = bergstrom2017_som[:, [2, 3, 4]].astype(np.float) + np.log10(100/(2*np.pi))
 
+bergstrom2017_som[:, [2, 3, 4]] = bergstrom2017_som[:, [2, 3, 4]].astype(np.float) + np.log10(100/(2*np.pi))
+bergstrom2017_som = bergstrom2017_som[[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,16]]
 
 # ## 1802.06811
 # s wave
@@ -81,11 +82,12 @@ pace2018 = np.array([
     ['Carina II', 's', 18.25+0.55, 18.25, 18.25-0.54],
     ['Coma Berenices', 's', 19.00+0.36, 19.00, 19.00-0.35],
     ['Hercules', 's', 17.37+0.53, 17.37, 17.37-0.53],
-    ['Horologium I, des', 's', 18.79+0.90, 18.79, 18.79-0.86],
-    ['Horologium I, k15', 's', 19.27+0.77, 19.27, 19.27-0.71],
-    ['Reticulum II, des', 's', 18.88+0.39, 18.88, 18.88-0.37],
-    ['Reticulum II, k15', 's', 18.96+0.38, 18.96, 18.96-0.37],
+    # ['Horologium I, des', 's', 18.79+0.90, 18.79, 18.79-0.86],
+    ['Horologium I', 's', 19.27+0.77, 19.27, 19.27-0.71],
+    # ['Reticulum II, des', 's', 18.88+0.39, 18.88, 18.88-0.37],
+    ['Reticulum II', 's', 18.96+0.38, 18.96, 18.96-0.37],
     ['Segue I', 's', 19.12+0.49, 19.12, 19.12-0.58],
+    ['Tucana II', 's', 18.84+0.55, 18.84, 18.84-0.5],
     ['Ursa Major I', 's', 18.26+0.29, 18.26, 18.26-0.27],
     ['Ursa Major II', 's', 19.44+0.41, 19.44, 19.44-0.39],
     ['Willman I', 's', 19.53+0.50, 19.53, 19.53-0.50]
@@ -113,11 +115,26 @@ petac2018_som[:, [2, 3, 4]] = petac2018_som[:, [2, 3, 4]].astype(np.float) + np.
 # Sommerfeld
 # 0.5
 kumar2017_som = np.array([
-    ['Reticulum II, des', 'som', np.log10(2.1*10**21*100/2/np.pi), np.log10(4.8*10**21*100/2/np.pi), np.log10(9.5*10**21*100/2/np.pi)],
+    ['Reticulum II', 'som', np.log10(2.1*10**21*100/2/np.pi), np.log10(4.8*10**21*100/2/np.pi), np.log10(9.5*10**21*100/2/np.pi)],
     ['Coma Berenices', 'som', np.log10(2*10**21*100/2/np.pi), np.log10(4*10**21*100/2/np.pi), np.log10(7.2*10**21*100/2/np.pi)],
     ['Segue I', 'som', np.log10(4.1*10**21*100/2/np.pi), np.log10(1.8*10**22*100/2/np.pi), np.log10(4*10**22*100/2/np.pi)],
     ['Draco I', 'som', np.log10(1.8*10**21*100/2/np.pi), np.log10(3.3*10**21*100/2/np.pi), np.log10(6*10**21*100/2/np.pi)],
     ['Ursa Minor', 'som', np.log10(2.2*10**21*100/2/np.pi), np.log10(5*10**21*100/2/np.pi), np.log10(9*10**21*100/2/np.pi)]
 ])
 
-np.savez('./j_factors/compare_values_j_factors.npz', geringer2015=geringer2015, bergstrom2017_s=bergstrom2017_s, bergstrom2017_som=bergstrom2017_som, pace2018=pace2018, petac2018_s=petac2018_s, petac2018_som=petac2018_som, kumar2017_som=kumar2017_som)
+# ## 1511.06296
+# s
+# 0.5
+walker2015 = np.array(['Tucana II', 's', 18.7-0.7, 18.7, 18.7+0.9])
+
+# ## 1612.06398
+# s
+# 0.5
+caldwell2016 = np.array(['Crater II', 's', 15.7-0.25, 15.7, 15.7+0.25])
+
+# ## 1804.06430
+# s
+# 0.5
+koposov2018 = np.array(['Hydrus I', 's', 18.33-0.34, 18.33, 18.33+0.38])
+
+np.savez('./j_factors/compare_values_j_factors.npz', geringer2015=geringer2015, bergstrom2017_s=bergstrom2017_s, bergstrom2017_som=bergstrom2017_som, pace2018=pace2018, petac2018_s=petac2018_s, petac2018_som=petac2018_som, kumar2017_som=kumar2017_som, walker2015=walker2015, caldwell2016=caldwell2016, koposov2018=koposov2018)

@@ -27,7 +27,8 @@ def integrate_spectra_table(data, names):
         temp_row = [m]
         for column, label in zip(data[i:j, 2:].T, names[2:]):
             integrand = interpolate.interp1d(x, column, kind='cubic', fill_value='extrapolate')
-            temp_row.append(integrate.quad(integrand, x[0], x[-1])[0])
+            limit = 100
+            temp_row.append(integrate.quad(integrand, x[0], x[-1], limit=limit)[0])
         results[results_index] = tuple(temp_row)
         results_index += 1
 

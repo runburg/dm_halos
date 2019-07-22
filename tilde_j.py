@@ -8,7 +8,6 @@ from scipy import integrate
 import matplotlib as mpl
 import h_funcs as h
 import matplotlib.pyplot as plt
-mpl.use('agg')
 
 g = {}
 gsfunc, gpfunc, gdfunc, gsomfunc = [0, 0, 0, 0]
@@ -33,8 +32,8 @@ def jval():
     # limitvals = np.logspace(0, 4, num=8)
     # for limit in limitvals:
     #     print('limit={}, result={}'.format(limit, integrate.quad(lambda x: x * h.hsom(x), 0, 50, limit=int(limit))[0]))
-    theta = np.logspace(-1, 1.5, num=10)
-    plt.plot(theta, [integrate.quad(lambda x: x * h.hsom(x), 0, angle, limit=50)[0] for angle in theta])
+    theta = np.logspace(-1, np.log10(50), num=8)
+    plt.plot(theta, [integrate.quad(lambda x: x * h.hsom(x), 0, angle, limit=int(angle*20))[0] for angle in theta])
     plt.show()
 
 if __name__ == '__main__':

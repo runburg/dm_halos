@@ -43,10 +43,10 @@ def dimensionless_integrated_j_factor():
 
 if __name__ == '__main__':
     funcs = dimensionless_integrated_j_factor()
-    plt.plot(funcs[0], funcs[1], label='s-wave')
-    plt.plot(funcs[0], funcs[2], label='p-wave')
+    # plt.plot(funcs[0], funcs[1], label='s-wave')
+    # plt.plot(funcs[0], funcs[2], label='p-wave')
     plt.plot(funcs[0], funcs[3], label='d-wave')
-    plt.plot(funcs[0], funcs[4], label='som enh')
+    # plt.plot(funcs[0], funcs[4], label='som enh')
     plt.legend()
     plt.show()
     with open('./j_factors/int_dimless_j_fac.npy', 'wb') as outfile:
