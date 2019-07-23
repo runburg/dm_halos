@@ -34,7 +34,7 @@ def import_madhat_output(infile):
     return array_from_file
 
 
-def style_ax(ax):
+def style_ax(ax, axs):
     """Style subplot axes."""
 
     ax.set_yscale('log')
@@ -42,6 +42,21 @@ def style_ax(ax):
     ax.set_xlim(left=7.5, right=5500)
     ax.set_xlabel(r'$m_\chi$ [GeV]')
     ax.set_ylabel(r'$(\sigma v)_0$ [$\mathrm{cm}^3\mathrm{s}^{-1}$]')
+
+    if ax == axs[0]:
+        ax.set_ylim(top=10**(-21))
+    if ax == axs[1]:
+        ax.set_ylim(top=10**(-23))
+
+
+def smooth_plot(x, y):
+    from scipy.interpolate import splrep, splev
+
+    x_new = np.logspace(np.log10(x.min()), np.log10(x.max()), num=200)
+    spline = splrep(np.log10(x),np.log10(y),s=5)
+    spliney = splev(np.log10(x), spline)
+
+    return x, 10**spliney
 
 
 def cross_section_plots(files):
@@ -69,13 +84,19 @@ def cross_section_plots(files):
         if wave == 'som':
             ax = axs[1]
 
-        # get cross section values
+        # get cross section values and check for finiteness
         cs = import_madhat_output(filename)['cs']
-        ax.plot(masses[-len(cs):], cs, label=channel, color = color_dict[channel], lw=5)
+        indices = np.isfinite(cs)
+        cs = cs[indices]
+        xmasses = masses[indices]
+
+        ax.plot(*smooth_plot(xmasses, cs), label=channel, color = color_dict[channel], lw=3)
         ax.legend(loc='lower right')
 
     for ax in axs:
-        style_ax(ax)
+        style_ax(ax, axs)
+        x = np.logspace(np.log10(10), np.log10(5000), num=30)
+        ax.plot(x, [3*10**(-26)]*len(x), lw=3, linestyle='--', color='gray')
     fig.savefig('./gamma_spectrums/cross_section_plots.pdf', bbox_inches='tight')
 
 def main():
