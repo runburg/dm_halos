@@ -108,7 +108,7 @@ def plot_all_dwarfs(infile):
     for errorcolor, angle_jfacs, a in zip(['xkcd:slate grey', 'xkcd:black'], infile, [r"$0.5^\circ$", r"$10^\circ$"]):
     # for errorcolor, angle_jfacs, a in zip(['xkcd:black'], infile, [r"$10^\circ$"]):
         jfacs = np.load(angle_jfacs)
-        jfacs[:, 0] = fix_names(jfacs[:, 0])
+        jfacs[:, 0] = set_x_value_names(fix_names(jfacs[:, 0]))
 
         js = jfacs[np.arange(0, len(jfacs), 4)]
         jp = jfacs[np.arange(1, len(jfacs), 4)]
@@ -118,8 +118,13 @@ def plot_all_dwarfs(infile):
         for d, c, l in zip([js, jp, jd, jsom], colors, labels):
             error_plot(ax, d, color=c, label=l+a, ec=errorcolor, mec=errorcolor)
 
-    for idwarf in np.arange(0, len(js), 2):
-        ax.axvline(js[idwarf, 0], color='xkcd:light gray', lw=48, zorder=-100)
+    for idwarf in np.arange(0, len(js)+2, 2):
+        ax.axvline(idwarf, color='xkcd:light gray', lw=48, zorder=-100)
+
+    x_labels = set_x_value_names(None, get_dict=True)
+
+    ax.set_xticks(list(x_labels.values()))
+    ax.set_xticklabels(list(x_labels.keys()))
 
     ax.yaxis.set_minor_locator(AutoMinorLocator())
     ax.tick_params(axis='y', which='minor', left=True, right=True)
