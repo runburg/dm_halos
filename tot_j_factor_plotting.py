@@ -61,6 +61,7 @@ def fix_names(name_list, get_dict=False):
     'horologium1_k15': 'Horologium I',
     'segue1': 'Segue I',
     'comaberenices': 'Coma Berenices',
+    'tucana2_des': 'Tucana II',
     'tucana2_k15': 'Tucana II',
     'reticulum2_k15': 'Reticulum II',
     'draco1': 'Draco I',
@@ -100,7 +101,7 @@ def set_x_value_names(data, get_dict=False):
 
 def plot_all_dwarfs(infile):
     """Generate the plots for all the dwarfs in the given file."""
-    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', 'xkcd:light turquoise']
+    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5)]
     labels = [r"$s$-wave, ", r"$p$-wave, ", r"$d$-wave, ", r"Sommerfeld, "]
 
     fig, ax = plt.subplots(figsize=(25, 25))

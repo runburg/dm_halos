@@ -165,8 +165,8 @@ def integrated_j_factor(list, upper_bound, wave, plot=False, dwarf=None):
         return(temp_j)
     else:
         results = weighted_median(temp_j, plot=plot, dwarf=dwarf)
-        if (dwarf == 'sagittarius2' or dwarf == 'horologium1_k15') and wave == 'd':
-            print('{}::low: {}, ave: {}, up: {}, d: {}, r_s: {}, rho_s: {}'.format(dwarf, *results))
+        # if (dwarf == 'tucana2_des' or dwarf == 'tucana2_k15'):
+        #     print('{}::low: {}, ave: {}, up: {}, d: {}, r_s: {}, rho_s: {}'.format(dwarf, *results))
         return results
 
 
@@ -208,7 +208,7 @@ def main():
     """Calculate the median J-factors for each dwarf."""
     load_funcs()
     # dwarf names to compute j_factors for
-    dwarflist_exclude = ['cetus', 'eridanus2', 'leot', 'and1', 'and3', 'and5', 'and7', 'and14', 'and18', 'tucana3', 'triangulum2', 'segue2', 'hydra2', 'leo4', 'leo5', 'pegasus3', 'pisces2', 'draco2', 'grus1', 'horologium1_des', 'reticulum2_des', 'tucana2_des']
+    dwarflist_exclude = ['cetus', 'eridanus2', 'leot', 'and1', 'and3', 'and5', 'and7', 'and14', 'and18', 'tucana3', 'triangulum2', 'segue2', 'hydra2', 'leo4', 'leo5', 'pegasus3', 'pisces2', 'draco2', 'grus1', 'horologium1_des', 'reticulum2_des', 'tucana2_k15']
 
     dwarflist = np.load('./j_factors/data2_jfac_extra_v1.npy')['name_short']
     dwarflist = np.concatenate((np.setdiff1d(dwarflist, dwarflist_exclude), np.array(['crater2', 'hydrus1', 'sagittarius2'])))

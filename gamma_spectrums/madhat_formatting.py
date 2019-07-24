@@ -65,7 +65,7 @@ def fix_dwarf_names(names):
     'horologium1_k15': 'Horologium I',
     'segue1': 'Segue I',
     'comaberenices': 'Coma Berenices',
-    'tucana2_k15': 'Tucana II',
+    'tucana2_des': 'Tucana II',
     'reticulum2_k15': 'Reticulum II',
     'draco1': 'Draco I',
     'hydrus1': 'Hydrus I',
@@ -94,7 +94,7 @@ spectra = np.load('/Users/runburg/github/dm_halos/gamma_spectrums/integrated_spe
 choose_channel = spectra.dtype.names
 
 for choose in choose_channel:
-    with open(f'/Users/runburg/github/dm_halos/gamma_spectrums/madhat_channel_spectra/channel_{choose}.in', 'w') as outfile:
+    with open(f'/Users/runburg/github/dm_halos/gamma_spectrums/madhat_channel_spectra/channel_{choose}.txt', 'w') as outfile:
         outfile.write(f'//{choose} channel integrated photon spectrum\n')
         outfile.write('MASS\tEnergy Spectrum\n')
         for mass, spectrum in zip(spectra['mDM'], spectra[choose]):
@@ -113,8 +113,30 @@ for j, wave in zip([js, jp, jd, jsom], ['s', 'p', 'd', 'som']):
     ave = j[:, 2].astype(np.float)
     low = ave - j[:, 1].astype(np.float)
     high = j[:, 3].astype(np.float) - ave
-    with open(f'./gamma_spectrums/madhat_jfacs/j_{wave}.dat', 'w') as outfile:
+    with open(f'./gamma_spectrums/madhat_jfacs/j_{wave}.txt', 'w') as outfile:
         outfile.write(f'//J_{wave} factors for dwarves in madhat\n')
         outfile.write('ID#\tJ\tdJ+\tdJ-\n')
         for dwarf in zip(j[:, 0], ave, high, low):
+            outfile.write('{}\t{}\t{}\t{}\n'.format(*dwarf))
+
+jfacs = np.load('/Users/runburg/github/dm_halos/j_factors/tot_j_factors/tot_j_fac_inclusive_10.npy')
+
+jfacs = np.array(fix_dwarf_names(jfacs))
+
+js = jfacs[np.arange(0, len(jfacs), 4)]
+jp = jfacs[np.arange(1, len(jfacs), 4)]
+jd = jfacs[np.arange(2, len(jfacs), 4)]
+jsom = jfacs[np.arange(3, len(jfacs), 4)]
+
+for j, wave in zip([js, jp, jd, jsom], ['s', 'p', 'd', 'som']):
+    ave = j[:, 2].astype(np.float)
+    print(ave)
+    indices = [avee > 0.15 * ave.max() for avee in ave]
+    low = ave - j[:, 1].astype(np.float)
+    high = j[:, 3].astype(np.float) - ave
+
+    with open(f'./gamma_spectrums/madhat_jfacs/j_{wave}_15.txt', 'w') as outfile:
+        outfile.write(f'//J_{wave} factors for dwarves in madhat\n')
+        outfile.write('ID#\tJ\tdJ+\tdJ-\n')
+        for dwarf in zip(j[:, 0][indices], ave[indices], high[indices], low[indices]):
             outfile.write('{}\t{}\t{}\t{}\n'.format(*dwarf))
