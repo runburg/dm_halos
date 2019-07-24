@@ -87,6 +87,7 @@ def cross_section_channel_plots(files, outfile):
         channel = filename.partition('_')[2].partition('_')
         wave = channel[2].strip('.out')
         channel = channel[0]
+        linestyle='-'
 
         # plot s and som on different subplots
         if wave == 's':
@@ -95,10 +96,13 @@ def cross_section_channel_plots(files, outfile):
             ax = axs[1]
 
         # get cross section values and check for finiteness
-        cs = import_madhat_output(filename)['cs']
-        indices = np.isfinite(cs)
-        cs = cs[indices]
+        data =  import_madhat_output(filename)
+        indices = np.isfinite(data['cs'])
         xmasses = masses[indices]
+        data = data[indices]
+        cs = data['cs']
+        dcs_up = data['+dcs']
+        dcs_down = data['-dcs']
 
         # pick color of plots
         color = color_dict[channel]
@@ -110,8 +114,14 @@ def cross_section_channel_plots(files, outfile):
             ax = axs[1]
         label = channel
 
-        ax.plot(*smooth_plot(xmasses, cs), label=label, color=color, lw=lw)
-        ax.legend(loc='lower right')
+        central = smooth_plot(xmasses, cs)
+        up = smooth_plot(xmasses, dcs_up)
+        down = smooth_plot(xmasses, dcs_down)
+        ax.plot(*central, label=label, color=color, lw=lw, linestyle=linestyle)
+        ax.plot(*up, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
+        ax.plot(*down, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
+        ax.fill_between(*central, up[-1], color=lighten_color(color, amount=0.3))
+        ax.fill_between(*central, down[-1], color=lighten_color(color, amount=0.3))
 
     for ax in axs:
         style_ax(ax, axs)
@@ -198,14 +208,29 @@ def cross_section_all_waves_plots(files, outfile, nrows=2, ncols=2):
         channel = wave[0]
         wave = wave[2].partition('_')[2].strip('.txt')
 
+        linestyle = '-'
+        alpha=0.3
+        label = channel
+
+        if wave.partition('_')[2] is not '':
+            wave = wave.partition('_')[0]
+            label = None
+            linestyle = ':'
+
+        # labels & titles
+
+        titles = {'s': r"$s$-wave", 'p': r"$p$-wave", 'd': r"$d$-wave", 'som': r"Som. enh."}
+        title = titles[wave]
+
         # get cross section values and check for finiteness
         data =  import_madhat_output(filename)
         indices = np.isfinite(data['cs'])
-        xmasses = masses[indices]
+        # xmasses = masses[indices]
         data = data[indices]
+        masses = data['Mass']
         cs = data['cs']
-        dcs_up = data['+dcs']
-        dcs_down = data['-dcs']
+        dcs_up = cs + data['+dcs']
+        dcs_down = cs - data['-dcs']
 
         # choose subplot
         if wave == 's':
@@ -220,20 +245,15 @@ def cross_section_all_waves_plots(files, outfile, nrows=2, ncols=2):
         # pick color of plots
         color = colors[channel]
 
-        # labels & titles
-        label = channel
-        titles = {'s': r"$s$-wave", 'p': r"$p$-wave", 'd': r"$d$-wave", 'som': r"Som. enh."}
-        title = titles[wave]
-
         # ax.errorbar(*smooth_plot(xmasses, cs), yerr=[dcs_down, dcs_up], label=label, color=color, lw=lw)
-        central = smooth_plot(xmasses, cs)
-        up = smooth_plot(xmasses, dcs_up)
-        down = smooth_plot(xmasses, dcs_down)
-        ax.plot(*central, label=label, color=color, lw=lw)
-        ax.plot(*up, color=lighten_color(color, amount=0.7), lw=lw*.2)
-        ax.plot(*down, color=lighten_color(color, amount=0.7), lw=lw*.2)
-        ax.fill_between(*central, up[-1], color=lighten_color(color, amount=0.3))
-        ax.fill_between(*central, down[-1], color=lighten_color(color, amount=0.3))
+        central = smooth_plot(masses, cs)
+        up = smooth_plot(masses, dcs_up)
+        down = smooth_plot(masses, dcs_down)
+        ax.plot(*central, label=label, color=color, lw=lw, linestyle=linestyle)
+        ax.plot(*up, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
+        ax.plot(*down, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
+        ax.fill_between(*central, up[-1], color=lighten_color(color, amount=0.3), alpha=alpha)
+        ax.fill_between(*central, down[-1], color=lighten_color(color, amount=0.3), alpha=alpha)
         ax.legend(loc='lower right')
         ax.set_title(title)
 
@@ -250,10 +270,10 @@ def main():
     path_to_files = '/Users/runburg/Desktop/MADHAT/Output/oldoutput/channel_*.out'
     cross_section_channel_plots(glob.glob(path_to_files), 'fig5.pdf')
 
-    path_to_files = '/Users/runburg/Desktop/MADHAT/jackoutput/channel_Tau_*.txt'
-    cross_section_wave_plots(glob.glob(path_to_files), 'tau_jack_data.pdf')
+    # path_to_files = '/Users/runburg/Desktop/MADHAT/jackoutput/channel_Tau_*.txt'
+    # cross_section_wave_plots(glob.glob(path_to_files), 'tau_jack_data.pdf')
 
-    path_to_files = '/Users/runburg/Desktop/MADHAT/jackoutput/channel_*.txt'
+    path_to_files = './madhat/jackoutput/channel_*.txt'
     cross_section_all_waves_plots(glob.glob(path_to_files), 'jack_data.pdf')
 
 

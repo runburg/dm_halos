@@ -1,4 +1,4 @@
-//e channel integrated photon spectrum
+#e channel integrated photon spectrum
 MASS	Energy Spectrum
 5.0	0.07352807685428638
 6.0	0.08954719400257702

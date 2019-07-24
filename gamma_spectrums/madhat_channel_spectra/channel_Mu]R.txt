@@ -1,4 +1,4 @@
-//Mu]R channel integrated photon spectrum
+#Mu]R channel integrated photon spectrum
 MASS	Energy Spectrum
 5.0	0.03174649931546235
 6.0	0.04051177522439234

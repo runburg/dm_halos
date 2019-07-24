@@ -95,7 +95,7 @@ choose_channel = spectra.dtype.names
 
 for choose in choose_channel:
     with open(f'/Users/runburg/github/dm_halos/gamma_spectrums/madhat_channel_spectra/channel_{choose}.txt', 'w') as outfile:
-        outfile.write(f'//{choose} channel integrated photon spectrum\n')
+        outfile.write(f'# {choose} channel integrated photon spectrum\n')
         outfile.write('MASS\tEnergy Spectrum\n')
         for mass, spectrum in zip(spectra['mDM'], spectra[choose]):
             outfile.write(f'{mass}\t{spectrum}\n')
@@ -113,10 +113,10 @@ for j, wave in zip([js, jp, jd, jsom], ['s', 'p', 'd', 'som']):
     ave = j[:, 2].astype(np.float)
     low = ave - j[:, 1].astype(np.float)
     high = j[:, 3].astype(np.float) - ave
-    with open(f'./gamma_spectrums/madhat_jfacs/j_{wave}.txt', 'w') as outfile:
-        outfile.write(f'//J_{wave} factors for dwarves in madhat\n')
-        outfile.write('ID#\tJ\tdJ+\tdJ-\n')
-        for dwarf in zip(j[:, 0], ave, high, low):
+    with open(f'./madhat/models/j_{wave}.txt', 'w') as outfile:
+        outfile.write(f'# J_{wave} factors for dwarves in madhat\n')
+        outfile.write('ID\tJ\tdJ+\tdJ-\n')
+        for dwarf in zip(j[:, 0].astype(int), ave, high, low):
             outfile.write('{}\t{}\t{}\t{}\n'.format(*dwarf))
 
 jfacs = np.load('/Users/runburg/github/dm_halos/j_factors/tot_j_factors/tot_j_fac_inclusive_10.npy')
@@ -131,12 +131,12 @@ jsom = jfacs[np.arange(3, len(jfacs), 4)]
 for j, wave in zip([js, jp, jd, jsom], ['s', 'p', 'd', 'som']):
     ave = j[:, 2].astype(np.float)
     print(ave)
-    indices = [avee > 0.15 * ave.max() for avee in ave]
+    indices = [10**avee > 0.15 * 10**ave.max() for avee in ave]
     low = ave - j[:, 1].astype(np.float)
     high = j[:, 3].astype(np.float) - ave
 
-    with open(f'./gamma_spectrums/madhat_jfacs/j_{wave}_15.txt', 'w') as outfile:
-        outfile.write(f'//J_{wave} factors for dwarves in madhat\n')
-        outfile.write('ID#\tJ\tdJ+\tdJ-\n')
-        for dwarf in zip(j[:, 0][indices], ave[indices], high[indices], low[indices]):
+    with open(f'./madhat/models/j_{wave}_15.txt', 'w') as outfile:
+        outfile.write(f'# J_{wave} factors for dwarves in madhat\n')
+        outfile.write('ID\tJ\tdJ+\tdJ-\n')
+        for dwarf in zip(j[:, 0][indices].astype(int), ave[indices], high[indices], low[indices]):
             outfile.write('{}\t{}\t{}\t{}\n'.format(*dwarf))

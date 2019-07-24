@@ -1,0 +1,18 @@
+############################################################
+# MADHAT (Model-Agnostic Dark Halo Analysis Tool ) Custom Mass Set
+#
+# Use README in file to understand inputs
+# 
+# 
+# MASS: The DM mass in GeV 
+# Energy: The corresponding integrated energy spectrum from 1 GeV and 100 GeV.
+############################################################
+MASS	Energy Spectrum
+6	20.76
+10	21.51
+14	20.99
+23	20.57
+24	20.58
+35	21.37
+38	20.54
+46	21.63

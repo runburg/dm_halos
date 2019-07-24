@@ -1,4 +1,4 @@
-//Tau]R channel integrated photon spectrum
+#Tau]R channel integrated photon spectrum
 MASS	Energy Spectrum
 5.0	0.4106415054343483
 6.0	0.5772254443935797

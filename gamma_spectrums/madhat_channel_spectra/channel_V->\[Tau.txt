@@ -1,4 +1,4 @@
-//V->\[Tau channel integrated photon spectrum
+#V->\[Tau channel integrated photon spectrum
 MASS	Energy Spectrum
 5.0	0.2081579462753027
 6.0	0.3833120297299309

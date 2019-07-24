@@ -1,4 +1,4 @@
-//Nu]\[Tau channel integrated photon spectrum
+#Nu]\[Tau channel integrated photon spectrum
 MASS	Energy Spectrum
 5.0	0.0
 6.0	0.0

@@ -1,4 +1,4 @@
-//Gamma channel integrated photon spectrum
+#Gamma channel integrated photon spectrum
 MASS	Energy Spectrum
 5.0	1.4000937164082592
 6.0	1.4018729788555828

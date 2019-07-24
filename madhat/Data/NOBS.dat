@@ -1,0 +1,55 @@
+############################################################
+# MADHAT (Model-Agnostic Dark Halo Analysis Tool ) Fermi PMF
+#
+# Use README in file to understand inputs
+# The first column corresponds to the dwarf number such as column 1 is  Bootes I 
+# The second column corresponds to the total number of observed events for that dwarf
+# The last column corresponds to average effective area ,Aeff, multipled by the total effective observation, Tobs.
+###########################################################
+1 128 4.042e+11
+2 144 4.012e+11
+3 99 4.197e+11
+4 72 4.270e+11
+5 91 4.259e+11
+6 159 4.363e+11
+7 95 3.737e+11
+8 120 4.024e+11
+9 151 4.046e+11
+10 150 5.366e+11
+11 156 5.607e+11
+12 72 4.173e+11
+13 113 4.290e+11
+14 125 3.993e+11
+15 105 4.191e+11
+16 154 4.203e+11
+17 222 4.330e+11
+18 132 4.394e+11
+19 102 4.272e+11
+20 162 4.012e+11
+21 257 4.376e+11
+22 201 4.409e+11
+23 138 3.879e+11
+24 83 3.996e+11
+25 133 3.670e+11
+26 122 3.993e+11
+27 145 3.682e+11
+28 168 3.753e+11
+29 92 4.314e+11
+30 109 4.344e+11
+31 137 3.718e+11
+32 128 4.423e+11
+33 158 4.612e+11
+34 312 4.270e+11
+35 114 3.897e+11
+36 154 3.947e+11
+37 246 4.072e+11
+38 139 3.699e+11
+39 198 4.383e+11
+40 128 4.518e+11
+41 132 4.500e+11
+42 111 4.517e+11
+43 101 4.593e+11
+44 108 4.823e+11
+45 225 5.594e+11
+46 123 5.701e+11
+47 113 4.771e+11
