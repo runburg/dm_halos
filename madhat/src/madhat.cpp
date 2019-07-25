@@ -33,11 +33,11 @@ typedef boost::multiprecision::number < cpp_dec_float < 50 >> madfloat;
 using namespace std;
 using namespace boost;
 #ifndef M_PI
-   # define M_PI 3.14159265358979323846
-# endif
+    #define M_PI 3.14159265358979323846
+#endif
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //All flags are false by defult to run the defult setup described in the README
-bool fileout = false; //This flag changes the output for the first two output options to a file in output from outputing to the terminal
+bool fileout = true; //This flag changes the output for the first two output options to a file in output from outputing to the terminal
 bool printall = true; //This flag changes the output so it displays beta as Nbound is incremented from outputing just the exact bound.
 int gal = 47; //The number of dwarf galaxies in the data files
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,23 +239,15 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
             JAT = J * obs_data[dwarf_list[i] - 1][2]; //Multiplying by Aeff*Tobs
             SJAT = SJAT + JAT; //summing them up in the loop
             if (Jerror == 1) {
-                JP = 2.30258509299*dwarf_data[i][2]; //Taking the +error in log10(J) and undoing the log base 10
-                JP = JP*J; 
+                JP = pow(10, dwarf_data[i][1]+dwarf_data[i][2]); //Taking the +error in log10(J) and undoing the log base 10
                 JP = JP * obs_data[dwarf_list[i] - 1][2]; //Then muliplying by Aeff*Tobs
-                JP = JP * JP; //Squaring that term
                 SJATP = SJATP + JP; //summing those errors up
                 // Then repeating the same process with M for minus
-                JM =  2.30258509299*dwarf_data[i][3];  //Taking the -error in log10(J) and undoing the log base 10
-                JM = JM*J; 
+                JM = pow(10, dwarf_data[i][1]-dwarf_data[i][3]); //Taking the +error in log10(J) and undoing the log base 10
                 JM = JM * obs_data[dwarf_list[i] - 1][2]; //Then muliplying by Aeff*Tobs
-                JM = JM * JM; //Squaring that term
                 SJATM = SJATM + JM; //summing those errors up
             }
         }
-    }
-    if (Jerror == 1) {
-        SJATM = pow(SJATM, .5); //Square rooting the sum of the -errors squared
-        SJATP = pow(SJATP, .5); //Square rooting the sum of the +errors squared
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //Setting the headers for the output files
@@ -327,8 +319,8 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
         B = 1 - Pf; //Taking the complment of the sum
         if (printall == true && intype != 3) {
             madfloat PHI = Nbound; //A variable for PHI
-            madfloat PHIP; //A variable for PHI + error 
-            madfloat PHIM; //A variable for PHI - error
+            madfloat PHIP = Nbound; //A variable for PHI + error 
+            madfloat PHIM = Nbound; //A variable for PHI - error
             madfloat CS; //A variable for CS
             madfloat CSP; //A variable for CS + error 
             madfloat CSM; //A variable for CS - error
@@ -336,13 +328,8 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
                 PHI = PHI / SJAT; //Phi=Nbound/JAT calculated earlier
             }
             if (Jerror == 1) {
-                PHIP = SJATP / SJAT; //The error in Phi + is equal to the the error in JAT 
-                PHIP = PHIP / SJAT; //Divided by the error in JAT again
-                PHIP = PHIP * Nbound; //Multiplied by Nbound
-                // Then repeating the same process with M for minus
-                PHIM = SJATM / SJAT;
-                PHIM = PHIM / SJAT;
-                PHIM = PHIM * Nbound;
+                PHIP = PHIP / SJATP; //Phi=Nbound/JAT calculated earlier
+                PHIM = PHIM / SJATM; //Phi=Nbound/JAT calculated earlier
                 CS = PHI * crosscons;
                 CSP = PHIP * crosscons;
                 CSM = PHIM * crosscons;
@@ -356,9 +343,9 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
             }
             if (Jerror == 1) {
                 printf("            ");
-                cout << PHIP; //Print Phi error if J factors have error
+                cout << PHIM-PHI; //Print Phi error if J factors have error
                 printf("        ");
-                cout << PHIM;
+                cout << -(PHIP-PHI);
             }
             if (crosscons != 0) {
                 if (Juse == 1) {
@@ -367,9 +354,9 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
                 }
                 if (Jerror == 1) {
                     printf("        ");
-                    cout << CSP; //Print Phi error if J factors have error
+                    cout << CSM-CS; //Print Phi error if J factors have error
                     printf("        ");
-                    cout << CSM;
+                    cout << -(CSP-CS);
                 }
             }
             printf("\n");
@@ -427,8 +414,8 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
     B = 1 - Pf; //Taking the complment of the sum
     if (printall == false || intype == 3) {
         madfloat PHI = Nbound; //A variable for PHI
-        madfloat PHIP; //A variable for PHI + error 
-        madfloat PHIM; //A variable for PHI - error
+        madfloat PHIP = Nbound; //A variable for PHI + error 
+        madfloat PHIM = Nbound; //A variable for PHI - error
         madfloat CS; //A variable for CS
         madfloat CSP; //A variable for CS + error 
         madfloat CSM; //A variable for CS - error
@@ -436,13 +423,8 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
             PHI = PHI / SJAT; //Phi=Nbound/JAT calculated earlier
         }
         if (Jerror == 1) {
-            PHIP = SJATP / SJAT; //The error in Phi + is equal to the the error in JAT 
-            PHIP = PHIP / SJAT; //Divided by the error in JAT again
-            PHIP = PHIP * Nbound; //Multiplied by Nbound
-            // Then repeating the same process with M for minus
-            PHIM = SJATM / SJAT;
-            PHIM = PHIM / SJAT;
-            PHIM = PHIM * Nbound;
+            PHIP = PHIP / SJATP; //Phi=Nbound/JAT calculated earlier
+            PHIM = PHIM / SJATM; //Phi=Nbound/JAT calculated earlier
             CS = PHI * crosscons;
             CSP = PHIP * crosscons;
             CSM = PHIM * crosscons;
@@ -458,9 +440,9 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
         }
         if (Jerror == 1) {
             printf("            ");
-            cout << PHIP; //Print Phi error if J factors have error
+            cout << PHIM-PHI; //Print Phi error if J factors have error
             printf("        ");
-            cout << PHIM;
+            cout << -(PHIP-PHI);
         }
         if (crosscons != 0) {
             if (Juse == 1) {
@@ -469,9 +451,9 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
             }
             if (Jerror == 1) {
                 printf("        ");
-                cout << CSP; //Print Phi error if J factors have error
+                cout << CSM-CS; //Print Phi error if J factors have error
                 printf("        ");
-                cout << CSM;
+                cout << -(CSP-CS);
             }
         }
     }
@@ -664,28 +646,20 @@ int output(float Nbound, float B, std::ifstream & INPUT, float mass, float energ
             JAT = J * obs_data[dwarf_list[i] - 1][2]; //Multiplying by Aeff*Tobs
             SJAT = SJAT + JAT; //summing them up in the loop
             if (Jerror == 1) {
-                JP = 2.30258509299*dwarf_data[i][2]; //Taking the +error in log10(J) and undoing the log base 10
-                JP = JP*J; 
+                JP = pow(10, dwarf_data[i][1]+dwarf_data[i][2]); //Undoing the log base 10
                 JP = JP * obs_data[dwarf_list[i] - 1][2]; //Then muliplying by Aeff*Tobs
-                JP = JP * JP; //Squaring that term
                 SJATP = SJATP + JP; //summing those errors up
                 // Then repeating the same process with M for minus
-                JM =  2.30258509299*dwarf_data[i][3];  //Taking the -error in log10(J) and undoing the log base 10
-                JM = JM*J; 
+                JM = pow(10, dwarf_data[i][1]-dwarf_data[i][3]); //Taking the -error in log10(J) and undoing the log base 10
                 JM = JM * obs_data[dwarf_list[i] - 1][2]; //Then muliplying by Aeff*Tobs
-                JM = JM * JM; //Squaring that term
                 SJATM = SJATM + JM; //summing those errors up
             }
         }
     }
-    if (Jerror == 1) {
-        SJATM = pow(SJATM, .5); //Square rooting the sum of the -errors squared
-        SJATP = pow(SJATP, .5); //Square rooting the sum of the +errors squared
-    }
     if (printall == false || intype == 3) {
         madfloat PHI = Nbound; //A variable for PHI
-        madfloat PHIP; //A variable for PHI + error 
-        madfloat PHIM; //A variable for PHI - error
+        madfloat PHIP= Nbound; //A variable for PHI + error 
+        madfloat PHIM= Nbound; //A variable for PHI - error
         madfloat CS; //A variable for CS
         madfloat CSP; //A variable for CS + error 
         madfloat CSM; //A variable for CS - error
@@ -693,13 +667,8 @@ int output(float Nbound, float B, std::ifstream & INPUT, float mass, float energ
             PHI = PHI / SJAT; //Phi=Nbound/JAT calculated earlier
         }
         if (Jerror == 1) {
-            PHIP = SJATP / SJAT; //The error in Phi + is equal to the the error in JAT 
-            PHIP = PHIP / SJAT; //Divided by the error in JAT again
-            PHIP = PHIP * Nbound; //Multiplied by Nbound
-            // Then repeating the same process with M for minus
-            PHIM = SJATM / SJAT;
-            PHIM = PHIM / SJAT;
-            PHIM = PHIM * Nbound;
+            PHIP = PHIP / SJATP; //Phi=Nbound/JAT calculated earlier
+            PHIM = PHIM / SJATM; //Phi=Nbound/JAT calculated earlier
             CS = PHI * crosscons;
             CSP = PHIP * crosscons;
             CSM = PHIM * crosscons;
@@ -715,9 +684,9 @@ int output(float Nbound, float B, std::ifstream & INPUT, float mass, float energ
         }
         if (Jerror == 1) {
             printf("            ");
-            cout << PHIP; //Print Phi error if J factors have error
+            cout << PHIM-PHI; //Print Phi error if J factors have error
             printf("        ");
-            cout << PHIM;
+            cout << -(PHIP-PHI);
         }
         if (crosscons != 0) {
             if (Juse == 1) {
@@ -726,9 +695,9 @@ int output(float Nbound, float B, std::ifstream & INPUT, float mass, float energ
             }
             if (Jerror == 1) {
                 printf("        ");
-                cout << CSP; //Print Phi error if J factors have error
+                cout << CSM-CS; //Print Phi error if J factors have error
                 printf("        ");
-                cout << CSM;
+                cout << -(CSP-CS);
             }
         }
     }
@@ -814,7 +783,7 @@ int input() {
     printf("Specify the dark matter mass in GeV, or 0 (zero) if not applicable.\n");
     float mass;
     cin >> mass;
-    if (!cin || mass<0) // or if(cin.fail())
+    if (!cin || mass < 0) // or if(cin.fail())
     {
         cout << "Not A valid Mass Value" << endl;
         return 0;
@@ -824,7 +793,7 @@ int input() {
         printf("Specify the integrated photon spectrum between 1 GeV and 100 GeV.\n");
         float energy;
         cin >> energy;
-        if (!cin|| energy<=0) // or if(cin.fail())
+        if (!cin || energy <= 0) // or if(cin.fail())
         {
             cout << "Not A valid Energy Value" << endl;
             return 0;
@@ -860,7 +829,7 @@ int input(char * dat, float Beta) {
     printf("Specify the dark matter mass in GeV, or 0 (zero) if not applicable.\n");
     float mass;
     cin >> mass;
-    if (!cin || mass<0) // or if(cin.fail())
+    if (!cin || mass < 0) // or if(cin.fail())
     {
         cout << "Not A valid Mass Value" << endl;
         return 0;
@@ -870,7 +839,7 @@ int input(char * dat, float Beta) {
         printf("Specify the integrated photon spectrum between 1 GeV and 100 GeV.\n");
         float energy;
         cin >> energy;
-        if (!cin || energy<=0) // or if(cin.fail())
+        if (!cin || energy <= 0) // or if(cin.fail())
         {
             cout << "Not A valid Energy Value" << endl;
             return 0;

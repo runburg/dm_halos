@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 import sys
-sys.path.insert(0, './')
+sys.path.insert(0, './total_j_factors/')
 from tot_j_factor_plotting import lighten_color
 
 
@@ -85,7 +85,7 @@ def cross_section_channel_plots(files, outfile):
     for filename in files:
         # get channel and wave names
         channel = filename.partition('_')[2].partition('_')
-        wave = channel[2].strip('.out')
+        wave = channel[2].partition('_')[2].strip('.txt')
         channel = channel[0]
         linestyle='-'
 
@@ -267,7 +267,7 @@ def cross_section_all_waves_plots(files, outfile, nrows=2, ncols=2):
 
 def main():
     """Create plots using madhat data."""
-    path_to_files = '/Users/runburg/Desktop/MADHAT/Output/oldoutput/channel_*.out'
+    path_to_files = './madhat/jackoutput/refpaperoutput/channel_*.txt'
     cross_section_channel_plots(glob.glob(path_to_files), 'fig5.pdf')
 
     # path_to_files = '/Users/runburg/Desktop/MADHAT/jackoutput/channel_Tau_*.txt'
