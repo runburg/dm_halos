@@ -37,9 +37,9 @@ using namespace boost;
 #endif
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //All flags are false by defult to run the defult setup described in the README
-bool fileout = true; //This flag changes the output for the first two output options to a file in output from outputing to the terminal
-bool printall = true; //This flag changes the output so it displays beta as Nbound is incremented from outputing just the exact bound.
-int gal = 47; //The number of dwarf galaxies in the data files
+bool fileout = false; //This flag changes the output for the first two output options to a file in output from outputing to the terminal
+bool printall = false; //This flag changes the output so it displays beta as Nbound is incremented from outputing just the exact bound.
+int gal = 58; //The number of dwarf galaxies in the data files
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //dist() Finds the Probability of TOT DM
 float dist(int Ndm, float Nbound) {
@@ -423,8 +423,8 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
             PHI = PHI / SJAT; //Phi=Nbound/JAT calculated earlier
         }
         if (Jerror == 1) {
-            PHIP = PHIP / SJATP; //Phi=Nbound/JAT calculated earlier
-            PHIM = PHIM / SJATM; //Phi=Nbound/JAT calculated earlier
+            PHIP = PHIP / SJATM; //Phi=Nbound/JAT calculated earlier
+            PHIM = PHIM / SJATP; //Phi=Nbound/JAT calculated earlier
             CS = PHI * crosscons;
             CSP = PHIP * crosscons;
             CSM = PHIM * crosscons;
@@ -440,9 +440,9 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
         }
         if (Jerror == 1) {
             printf("            ");
-            cout << PHIM-PHI; //Print Phi error if J factors have error
+            cout << PHIP-PHI; //Print Phi error if J factors have error
             printf("        ");
-            cout << -(PHIP-PHI);
+            cout << -(PHIM-PHI);
         }
         if (crosscons != 0) {
             if (Juse == 1) {
@@ -451,9 +451,9 @@ float process(float Beta, std::ifstream & INPUT, float mass, float energy, int J
             }
             if (Jerror == 1) {
                 printf("        ");
-                cout << CSM-CS; //Print Phi error if J factors have error
+                cout << CSP-CS; //Print Phi error if J factors have error
                 printf("        ");
-                cout << -(CSP-CS);
+                cout << -(CSM-CS);
             }
         }
     }
@@ -585,53 +585,6 @@ int output(float Nbound, float B, std::ifstream & INPUT, float mass, float energ
         Nobs = Nobs + obs_data[dwarf_list[i] - 1][1]; //Summing over all observered to get the number
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////
-    //Calculating P1
-    int Nbgd = 0;
-    float P1[Nobs + 1];
-    memset(P1, 0, sizeof(P1));
-    if (dwarf_count == 1) { //For Number of dwarves=1 simply gathering them from the file
-        for (int i = 0; i < (Nobs + 1); i++) {
-            P1[i] = pmf[i][dwarf_list[0]];
-        }
-    }
-
-    if (dwarf_count != 1) { //Incrementing up Ntot Bgd while summing over partitions
-        float tempp = 0;
-        float X[Nobs + 1];
-        float I[Nobs + 1];
-
-        for (int i = 0; i < Nobs + 1; i++) {
-            I[i] = pmf[i][dwarf_list[0]];
-        }
-        for (int i = 0; i < Nobs + 1; i++) {
-            X[i] = 0;
-        }
-        for (int k = 1; k < (dwarf_count - 1); k++) {
-            for (int j = 0; j < Nobs + 2; j++) {
-                for (int i = 0; i < j + 1; i++) {
-                    tempp = pmf[i][dwarf_list[k]] * I[j - i];
-                    X[j] = X[j] + tempp;
-                }
-            }
-            for (int j = 0; j < Nobs + 1; j++) {
-                I[j] = X[j];
-            }
-            for (int j = 0; j < Nobs + 1; j++) {
-                X[j] = 0;
-            }
-        }
-        for (int n = 0; n < (Nobs + 1); n++) {
-            for (int k = 0; k < n + 1; k++) {
-                X[k] = pmf[n - k][dwarf_list[dwarf_count - 1]] * I[k];
-            }
-            for (int k = 0; k < n + 1; k++) {
-                P1[n] = P1[n] + X[k];
-            }
-            Nbgd++;
-        }
-    }
-    Nbgd = 0;
-    /////////////////////////////////////////////////////////////////////////////////////////////////
     //Prepping J factors for calculation
     madfloat JAT = 0; //Variable for J factor times Aeff*Tobs
     madfloat JP = 0; //Variable for J factor times Aeff*Tobs + error
@@ -667,8 +620,8 @@ int output(float Nbound, float B, std::ifstream & INPUT, float mass, float energ
             PHI = PHI / SJAT; //Phi=Nbound/JAT calculated earlier
         }
         if (Jerror == 1) {
-            PHIP = PHIP / SJATP; //Phi=Nbound/JAT calculated earlier
-            PHIM = PHIM / SJATM; //Phi=Nbound/JAT calculated earlier
+            PHIP = PHIP / SJATM; //Phi=Nbound/JAT calculated earlier
+            PHIM = PHIM / SJATP; //Phi=Nbound/JAT calculated earlier
             CS = PHI * crosscons;
             CSP = PHIP * crosscons;
             CSM = PHIM * crosscons;
@@ -684,9 +637,9 @@ int output(float Nbound, float B, std::ifstream & INPUT, float mass, float energ
         }
         if (Jerror == 1) {
             printf("            ");
-            cout << PHIM-PHI; //Print Phi error if J factors have error
+            cout << PHIP-PHI; //Print Phi error if J factors have error
             printf("        ");
-            cout << -(PHIP-PHI);
+            cout << -(PHIM-PHI);
         }
         if (crosscons != 0) {
             if (Juse == 1) {
@@ -695,9 +648,9 @@ int output(float Nbound, float B, std::ifstream & INPUT, float mass, float energ
             }
             if (Jerror == 1) {
                 printf("        ");
-                cout << CSM-CS; //Print Phi error if J factors have error
+                cout << CSP-CS; //Print Phi error if J factors have error
                 printf("        ");
-                cout << -(CSP-CS);
+                cout << -(CSM-CS);
             }
         }
     }

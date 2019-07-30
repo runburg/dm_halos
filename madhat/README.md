@@ -116,50 +116,61 @@ The IDs can be found a the bottom of the README document
 
 ## Dwarfs with corresponding ID number
 
- 1--Bootes I\
- 2--Bootes II\
- 3--Bootes III\
- 4--Canes Venatici I\
- 5--Canes Venatici II\
- 6--Carina\
- 7--Cetus II\
- 8--Columba I\
- 9--Coma Berenices\
- 10--Draco\
- 11--Draco II\
- 12--Eridanus II\
- 13--Eridanus III\
- 14--Fornax\
- 15--Grus I\
- 16--Grus II\
- 17--Hercules\
- 18--Horologium I\
- 19--Horologium II\
- 20--Hydra II\
- 21--Indus II\
- 22--Kim 2\
- 23--Leo I\
- 24--Leo II\
- 25--Leo IV\
- 26--Leo T\
- 27--Leo V\
- 28--Pegasus III\
- 29--Phoenix II\
- 30--Pictor I\
- 31--Pisces II\
- 32--Reticulum II\
- 33--Reticulum III\
- 34--Sagittarius II\
- 35--Sculptor\
- 36--Segue 1\
- 37--Segue 2\
- 38--Sextans\
- 39--Triangulum II\
- 40--Tucana II\
- 41--Tucana III\
- 42--Tucana IV\
- 43--Tucana V\
- 44--Ursa Major I\
- 45--Ursa Major II\
- 46--Ursa Minor\
- 47--Willman I
+ 1--Aquarius II\
+ 2--Bootes I\ 
+ 3--Bootes II\
+ 4--Bootes III\
+ 5--Canes Venatici I\
+ 6--Canes Venatici II\
+ 7--Canis Major\
+ 8--Carina\
+ 9--Carina II\
+ 10--Carina III\
+ 11--Cetus II\
+ 12--Cetus III\
+ 13--Columba I\
+ 14--Coma Berenices\
+ 15--Crater II\
+ 16--Draco\
+ 17--Draco II\
+ 18--Eridanus II\
+ 19--Eridanus III\
+ 20--Fornax\
+ 21--Grus I\
+ 22--Grus II\
+ 23--Hercules\
+ 24--Horologium I\
+ 25--Horologium II\
+ 26--Hydra II\
+ 27--Hydrus I\
+ 28--Indus II\
+ 29--Kim 2\
+ 30--Laevens 3\
+ 31--Leo I\
+ 32--Leo II\
+ 33--Leo IV\
+ 34--Leo T\
+ 35--Leo V\
+ 36--Pegasus III\
+ 37--Phoenix II\
+ 38--Pictor I\
+ 39-Pictor II\
+ 40--Pisces II\
+ 41--Reticulum II\
+ 42--Reticulum III\
+ 43--Sagittarius\
+ 44--Sagittarius II\
+ 45--Sculptor\
+ 46--Segue 1\
+ 47--Segue 2\
+ 48--Sextans\
+ 49--Triangulum II\
+ 50--Tucana II\
+ 51--Tucana III\
+ 52--Tucana IV\
+ 53--Tucana V\
+ 54--Ursa Major I\
+ 55--Ursa Major II\
+ 56--Ursa Minor\
+ 57--Virgo I\
+ 58--Willman 1\

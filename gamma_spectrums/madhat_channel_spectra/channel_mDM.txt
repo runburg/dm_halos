@@ -1,4 +1,4 @@
-#mDM channel integrated photon spectrum
+# mDM channel integrated photon spectrum
 MASS	Energy Spectrum
 5.0	5.0
 6.0	6.0

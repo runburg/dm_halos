@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-path="/Users/runburg/Desktop/MADHAT/"
+path="/Users/runburg/github/dm_halos/madhat/"
 beta="0.9500"
 mv j_*.txt models/;
 mv channel_*.txt channels/;

@@ -61,8 +61,7 @@ def style_ax(ax, axs):
 def smooth_plot(x, y):
     from scipy.interpolate import splrep, splev
 
-    x_new = np.logspace(np.log10(x.min()), np.log10(x.max()), num=200)
-    spline = splrep(np.log10(x),np.log10(y),s=5)
+    spline = splrep(np.log10(x), np.log10(y), s=0.005)
     spliney = splev(np.log10(x), spline)
 
     return x, 10**spliney
@@ -81,12 +80,13 @@ def cross_section_channel_plots(files, outfile):
     fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True, figsize=figsize)
 
     # define colors for the different channels
-    color_dict = dict(zip(['Tau', 'b', 'Mu', 'W'],['b', 'r', 'g', 'k']))
+    color_dict = dict(zip(['Tau', 'b', 'Mu', 'W'],['b', 'r', 'xkcd:light green', 'k']))
     for filename in files:
         # get channel and wave names
         channel = filename.partition('_')[2].partition('_')
         wave = channel[2].partition('_')[2].strip('.txt')
         channel = channel[0]
+
         linestyle='-'
 
         # plot s and som on different subplots
@@ -101,8 +101,8 @@ def cross_section_channel_plots(files, outfile):
         xmasses = masses[indices]
         data = data[indices]
         cs = data['cs']
-        dcs_up = data['+dcs']
-        dcs_down = data['-dcs']
+        dcs_up = cs + data['+dcs']
+        dcs_down = cs - data['-dcs']
 
         # pick color of plots
         color = color_dict[channel]
@@ -117,11 +117,17 @@ def cross_section_channel_plots(files, outfile):
         central = smooth_plot(xmasses, cs)
         up = smooth_plot(xmasses, dcs_up)
         down = smooth_plot(xmasses, dcs_down)
+        # central = (xmasses, cs)
+        # up = (xmasses, dcs_up)
+        # down = (xmasses, dcs_down)
         ax.plot(*central, label=label, color=color, lw=lw, linestyle=linestyle)
-        ax.plot(*up, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
-        ax.plot(*down, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
-        ax.fill_between(*central, up[-1], color=lighten_color(color, amount=0.3))
-        ax.fill_between(*central, down[-1], color=lighten_color(color, amount=0.3))
+        if channel=='b':
+            print(central)
+            ax.plot(*up, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
+            ax.plot(*down, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
+            ax.fill_between(*central, up[-1], color=lighten_color(color, amount=0.3))
+            ax.fill_between(*central, down[-1], color=lighten_color(color, amount=0.3))
+        ax.legend(loc='lower right')
 
     for ax in axs:
         style_ax(ax, axs)
@@ -218,7 +224,6 @@ def cross_section_all_waves_plots(files, outfile, nrows=2, ncols=2):
             linestyle = ':'
 
         # labels & titles
-
         titles = {'s': r"$s$-wave", 'p': r"$p$-wave", 'd': r"$d$-wave", 'som': r"Som. enh."}
         title = titles[wave]
 

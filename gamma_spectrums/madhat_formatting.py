@@ -11,53 +11,63 @@ import numpy as np
 
 def fix_dwarf_names(names):
     # from MADHAT
-    dwarfs = ['Bootes I',
-    'Bootes II',
-    'Bootes III',
-    'Canes Venatici I',
-    'Canes Venatici II',
-    'Carina',
-    'Cetus II',
-    'Columba I',
-    'Coma Berenices',
-    'Draco',
-    'Draco II',
-    'Eridanus II',
-    'Eridanus III',
-    'Fornax',
-    'Grus I',
-    'Grus II',
-    'Hercules',
-    'Horologium I',
-    'Horologium II',
-    'Hydra II',
-    'Indus II',
-    'Kim 2',
-    'Leo I',
-    'Leo II',
-    'Leo IV',
-    'Leo T',
-    'Leo V',
-    'Pegasus III',
-    'Phoenix II',
-    'Pictor I',
-    'Pisces II',
-    'Reticulum II',
-    'Reticulum III',
-    'Sagittarius II',
-    'Sculptor',
-    'Segue 1',
-    'Segue 2',
-    'Sextans',
-    'Triangulum II',
-    'Tucana II',
-    'Tucana III',
-    'Tucana IV',
-    'Tucana V',
-    'Ursa Major I',
-    'Ursa Major II',
-    'Ursa Minor',
-    'Willman I']
+    dwarfs = ['Aquarius II',
+'Bootes I',
+'Bootes II',
+'Bootes III',
+'Canes Venatici I',
+'Canes Venatici II',
+'Canis Major',
+'Carina',
+'Carina II',
+'Carina III',
+'Cetus II',
+'Cetus III',
+'Columba I',
+'Coma Berenices',
+'Crater II',
+'Draco',
+'Draco II',
+'Eridanus II',
+'Eridanus III',
+'Fornax',
+'Grus I',
+'Grus II',
+'Hercules',
+'Horologium I',
+'Horologium II',
+'Hydra II',
+'Hydrus I',
+'Indus II',
+'Kim 2',
+'Laevens III',
+'Leo I',
+'Leo II',
+'Leo IV',
+'Leo T',
+'Leo V',
+'Pegasus III',
+'Phoenix II',
+'Pictor I',
+'Pictor II',
+'Pisces II',
+'Reticulum II',
+'Reticulum III',
+'Sagittarius',
+'Sagittarius II',
+'Sculptor',
+'Segue I',
+'Segue II',
+'Sextans',
+'Triangulum II',
+'Tucana II',
+'Tucana III',
+'Tucana IV',
+'Tucana V',
+'Ursa Major I',
+'Ursa Major II',
+'Ursa Minor',
+'Virgo I']
     # calculated j-factors
     name_dict = {
     'ursamajor2': 'Ursa Major II',
@@ -90,17 +100,17 @@ def fix_dwarf_names(names):
     return [[dwarf_dict[name_dict[name]], *names[i, 2:].astype(np.float)] for i, name in enumerate(names[:, 0]) if name_dict[name] in dwarf_dict.keys()]
 
 
-spectra = np.load('/Users/runburg/github/dm_halos/gamma_spectrums/integrated_spectra.npy')
+spectra = np.load('/Users/runburg/github/dm_halos/gamma_spectrums/integrated_spectra.npy', allow_pickle=False)
 choose_channel = spectra.dtype.names
 
 for choose in choose_channel:
-    with open(f'/Users/runburg/github/dm_halos/gamma_spectrums/madhat_channel_spectra/channel_{choose}.txt', 'w') as outfile:
+    with open(f'./gamma_spectrums/madhat_channel_spectra/channel_{choose}.txt', 'w') as outfile:
         outfile.write(f'# {choose} channel integrated photon spectrum\n')
         outfile.write('MASS\tEnergy Spectrum\n')
         for mass, spectrum in zip(spectra['mDM'], spectra[choose]):
             outfile.write(f'{mass}\t{spectrum}\n')
 
-jfacs = np.load('/Users/runburg/github/dm_halos/j_factors/tot_j_factors/tot_j_fac_inclusive_10.npy')
+jfacs = np.load('/Users/runburg/github/dm_halos/total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_10.npy')
 
 jfacs = np.array(fix_dwarf_names(jfacs))
 
@@ -119,7 +129,7 @@ for j, wave in zip([js, jp, jd, jsom], ['s', 'p', 'd', 'som']):
         for dwarf in zip(j[:, 0].astype(int), ave, high, low):
             outfile.write('{}\t{}\t{}\t{}\n'.format(*dwarf))
 
-jfacs = np.load('/Users/runburg/github/dm_halos/j_factors/tot_j_factors/tot_j_fac_inclusive_10.npy')
+jfacs = np.load('/Users/runburg/github/dm_halos/total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_10.npy')
 
 jfacs = np.array(fix_dwarf_names(jfacs))
 
@@ -130,7 +140,6 @@ jsom = jfacs[np.arange(3, len(jfacs), 4)]
 
 for j, wave in zip([js, jp, jd, jsom], ['s', 'p', 'd', 'som']):
     ave = j[:, 2].astype(np.float)
-    print(ave)
     indices = [10**avee > 0.15 * 10**ave.max() for avee in ave]
     low = ave - j[:, 1].astype(np.float)
     high = j[:, 3].astype(np.float) - ave
