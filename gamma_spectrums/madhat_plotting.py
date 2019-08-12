@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 import glob
 import sys
 sys.path.insert(0, './total_j_factors/')
-from tot_j_factor_plotting import lighten_color
+from tot_j_factor_plotting import lighten_color, configure_plot_params
+
 
 
 def import_madhat_output(infile):
@@ -23,7 +24,7 @@ def import_madhat_output(infile):
         first_line = list(map(str.strip, list(filter(lambda x: x != '', first_line))))
         first_line = [line.partition('(')[0] for line in first_line]
 
-        #create structured array of madhat data
+        #create  structured array of madhat data
         array_from_file = []
 
         # read in lines and create list of floats
@@ -39,12 +40,13 @@ def import_madhat_output(infile):
 
 def style_ax(ax, axs):
     """Style subplot axes."""
-
     ax.set_yscale('log')
     ax.set_xscale('log')
     ax.set_xlim(left=7.5, right=5500)
-    ax.set_xlabel(r'$m_\chi$ [GeV]')
-    ax.set_ylabel(r'$(\sigma v)_0$ [$\mathrm{cm}^3\mathrm{s}^{-1}$]')
+
+    ax.tick_params('x', which='both', direction='in', bottom=True, top=True)
+    ax.tick_params('y', which='both', direction='in', left=True, right=True)
+
     if ax is not axs:
         if axs.shape == (2,):
             if ax == axs[0]:
@@ -52,19 +54,41 @@ def style_ax(ax, axs):
             if ax == axs[1]:
                 ax.set_ylim(top=10**(-23))
         else:
-            axs[0,0].set_ylim(bottom=10**(-28), top=10**(-21))
-            axs[0,1].set_ylim(bottom=10**(-21), top=10**(-14))
-            axs[1,0].set_ylim(bottom=10**(-14), top=10**(-7))
-            axs[1,1].set_ylim(bottom=10**(-32), top=10**(-25))
+            if ax == axs[1, 0] or ax == axs[1, 1]:
+                ax.set_xlabel(r'$m_\chi$ [GeV]')
+            if ax == axs[0, 0] or ax == axs[1, 0]:
+                ax.set_ylabel(r'$(\sigma v)_0$ [$\mathrm{cm}^3\mathrm{s}^{-1}$]')
+            axs[0,0].set_ylim(bottom=10**(-27), top=10**(-20))
+            axs[0,1].set_ylim(bottom=10**(-21), top=10**(-13))
+            axs[1,0].set_ylim(bottom=10**(-15), top=10**(-7))
+            axs[1,1].set_ylim(bottom=10**(-31), top=10**(-25))
 
 
 def smooth_plot(x, y):
     from scipy.interpolate import splrep, splev
 
-    spline = splrep(np.log10(x), np.log10(y), s=0.005)
-    spliney = splev(np.log10(x), spline)
+    x_new = np.logspace(np.log10(x.min()), np.log10(x.max()), num=100)
 
-    return x, 10**spliney
+    # smooth function based on smoothing parameter s, smaller means less smooth
+    spline = splrep(np.log10(x), np.log10(y), s=0.008)
+    spliney = splev(np.log10(x_new), spline)
+
+    return x_new, 10**spliney
+
+
+def legend_sorter(ax):
+    """Sort the legend entries by label."""
+    # add legend
+    ax.legend(loc='lower right')
+
+    # get and sort handles, labels
+    handles, labels = ax.get_legend_handles_labels()
+    labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+
+    # sort the legend
+    ax.legend(handles, labels, loc='lower right', frameon=False)
+
+    return labels, handles
 
 
 def cross_section_channel_plots(files, outfile):
@@ -122,7 +146,6 @@ def cross_section_channel_plots(files, outfile):
         # down = (xmasses, dcs_down)
         ax.plot(*central, label=label, color=color, lw=lw, linestyle=linestyle)
         if channel=='b':
-            print(central)
             ax.plot(*up, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
             ax.plot(*down, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
             ax.fill_between(*central, up[-1], color=lighten_color(color, amount=0.3))
@@ -194,28 +217,33 @@ def cross_section_wave_plots(files, outfile, nrows=1, ncols=1):
 
 
 def cross_section_all_waves_plots(files, outfile, nrows=2, ncols=2):
-    """Plot the s and som cutoffs of cross sections."""
+    """Plot the s, p, d, & som cutoffs of cross sections."""
     # get masses for plotting
     masses = np.load('./gamma_spectrums/integrated_spectra.npy')['mDM']
 
     # set up figure
-    plt.rc('text', usetex=True)
-    plt.rc('font', family='serif')
+    configure_plot_params(fontsize=10, spacing=0.2)
     lw=2
 
-    figsize = [2+ncols*5, nrows*5]
-    fig, axs = plt.subplots(nrows=nrows, ncols=ncols, sharex=True, figsize=figsize)
+    figsize = [2+ncols*5.5, nrows*5.5]
+    fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=figsize)
 
     ax = axs
-    colors = dict(zip(['Tau', 'Mu', 'b',  'W'],['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5), lighten_color('xkcd:purple', amount=0.8), 'xkcd:hot pink']))
+    # choose colors, labels, and titles for subplots
+    labels = ['Tau', 'Mu', 'b',  'W']
+    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5), lighten_color('xkcd:purple', amount=0.8), 'xkcd:hot pink']
+    titles = {'s': r"$s$-wave", 'p': r"$p$-wave", 'd': r"$d$-wave", 'som': r"Som. enh."}
+
+    colors = dict(zip(labels, colors))
     for filename in files:
         # get channel and wave name
         wave = filename.partition('_')[2].partition('_')
         channel = wave[0]
         wave = wave[2].partition('_')[2].strip('.txt')
 
+        # choose the linestyle of the error bands and the transparency
         linestyle = '-'
-        alpha=0.3
+        alpha = 0.2
         label = channel
 
         if wave.partition('_')[2] is not '':
@@ -224,7 +252,6 @@ def cross_section_all_waves_plots(files, outfile, nrows=2, ncols=2):
             linestyle = ':'
 
         # labels & titles
-        titles = {'s': r"$s$-wave", 'p': r"$p$-wave", 'd': r"$d$-wave", 'som': r"Som. enh."}
         title = titles[wave]
 
         # get cross section values and check for finiteness
@@ -250,22 +277,27 @@ def cross_section_all_waves_plots(files, outfile, nrows=2, ncols=2):
         # pick color of plots
         color = colors[channel]
 
-        # ax.errorbar(*smooth_plot(xmasses, cs), yerr=[dcs_down, dcs_up], label=label, color=color, lw=lw)
+        # smooth data from MADHAT
         central = smooth_plot(masses, cs)
         up = smooth_plot(masses, dcs_up)
         down = smooth_plot(masses, dcs_down)
+
+        # add plots and error bands and shade between
         ax.plot(*central, label=label, color=color, lw=lw, linestyle=linestyle)
         ax.plot(*up, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
         ax.plot(*down, color=lighten_color(color, amount=0.7), lw=lw*.2, linestyle=linestyle)
         ax.fill_between(*central, up[-1], color=lighten_color(color, amount=0.3), alpha=alpha)
         ax.fill_between(*central, down[-1], color=lighten_color(color, amount=0.3), alpha=alpha)
-        ax.legend(loc='lower right')
+
+        # add legend and sort it
+        legend_sorter(ax)
+
+        # title of subplot
         ax.set_title(title)
 
+    # format the axes
     for ax in axs.flatten():
         style_ax(ax, axs)
-    # x = np.logspace(np.log10(1), np.log10(10000), num=30)
-    # ax.plot(x, [3*10**(-26)]*len(x), lw=lw, linestyle='--', color='gray')
 
     fig.savefig(f'./gamma_spectrums/madhat_plots/{outfile}', bbox_inches='tight')
 

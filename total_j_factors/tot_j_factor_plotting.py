@@ -14,6 +14,52 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
                                AutoMinorLocator)
 
 
+def configure_plot_params(fontsize=20, spacing=0.2):
+    plt.rc('text', usetex=True)
+    plt.rc('font', family='serif')
+
+    mpl.rcParams['font.size'] = fontsize
+    mpl.rcParams['axes.labelsize'] = 'x-large'
+    mpl.rcParams['axes.titlesize'] = 'xx-large'
+
+    mpl.rcParams['figure.subplot.wspace'] = spacing
+    mpl.rcParams['figure.subplot.hspace'] = spacing
+
+    mpl.rcParams['xtick.labelsize'] = 'x-large'
+    mpl.rcParams['xtick.major.size'] = 7.5
+    mpl.rcParams['xtick.major.width'] = 1
+    mpl.rcParams['xtick.minor.size'] = 3.75
+    mpl.rcParams['xtick.minor.width'] = 0.5
+
+    mpl.rcParams['ytick.labelsize'] = 'x-large'
+    mpl.rcParams['ytick.major.size'] = 7.5
+    mpl.rcParams['ytick.major.width'] = 1
+    mpl.rcParams['ytick.minor.size'] = 3.75
+    mpl.rcParams['ytick.minor.width'] = 0.5
+
+
+def lighten_color(color, amount=0.5):
+    """
+    Lightens the given color by multiplying (1-luminosity) by the given amount.
+
+    Input can be matplotlib color string, hex string, or RGB tuple. Make amount > 1 to darken.
+
+    Examples:
+    >> lighten_color('g', 0.3)
+    >> lighten_color('#F034A3', 0.6)
+    >> lighten_color((.3,.55,.1), 0.5)
+
+    """
+    import matplotlib.colors as mc
+    import colorsys
+    try:
+        c = mc.cnames[color]
+    except KeyError:
+        c = color
+    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+    return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
+
+
 def sorted_j_factors(angle_jfacs):
     """Return the names of the sorted j-factors."""
     jfacs = np.load(angle_jfacs)
@@ -31,7 +77,7 @@ def sorted_j_factors(angle_jfacs):
     np.savetxt(angle_jfacs[:-4] + '_sorted_names.txt', sorted_names, fmt='%s', delimiter=' & ', newline=' \\\\\hline\n')
 
 
-def error_plot(axs, data, offset=0, color='r', label=None, ec=0, mec=None):
+def error_plot(axs, data, offset=0, color='r', label=None, ec=0, mec=None, ms=6, lw=2):
     """Generate a scatterplot with error bars for the given j-factor data."""
     try:
         ave = data[:, 3].astype(np.float)
@@ -50,36 +96,35 @@ def error_plot(axs, data, offset=0, color='r', label=None, ec=0, mec=None):
     except IndexError:
         x = data[0].astype(np.float) + offset
 
-    axs.errorbar(x, ave, yerr=[low, high], fmt='D', ecolor=ec, mec=mec, color=color, mew=1.5, capsize=5, elinewidth=2, label=label)
+    axs.errorbar(x, ave, yerr=[low, high], fmt='D', ecolor=ec, mec=mec, color=color, mew=lw, capsize=lw+5, label=label, ms=ms, lw=lw)
 
 
 def fix_names(name_list, get_dict=False):
     """Fix names for plotting of dwarfs."""
     name_dict = {
-    'ursamajor2': 'Ursa Major II',
+    'ursamajor2': 'U. Major II',
     'willman1': 'Willman I',
-    'horologium1_k15': 'Horologium I',
+    'horologium1_k15': 'Hor. I',
     'segue1': 'Segue I',
-    'comaberenices': 'Coma Berenices',
+    'comaberenices': 'Com. Ber.',
     'tucana2_des': 'Tucana II',
-    'tucana2_k15': 'Tucana II',
-    'reticulum2_k15': 'Reticulum II',
+    'reticulum2_k15': 'Ret. II',
     'draco1': 'Draco I',
     'hydrus1': 'Hydrus I',
-    'ursaminor': 'Ursa Minor',
+    'ursaminor': 'U. Minor',
     'sculptor': 'Sculptor',
     'carina2': 'Carina II',
     'aquarius2': 'Aquarius II',
     'bootes1': 'Bootes I',
-    'ursamajor1': 'Ursa Major I',
+    'ursamajor1': 'U. Major I',
     'fornax': 'Fornax',
-    'canesvenatici2': 'Canes Venatici II',
+    'canesvenatici2': 'Can. Ven. II',
     'carina': 'Carina',
     'sextans': 'Sextans',
     'leo2': 'Leo II',
     'leo1': 'Leo I',
-    'canesvenatici1': 'Canes Venatici I',
-    'sagittarius2': 'Sagittarius II',
+    'canesvenatici1': 'Can. Ven. I',
+    'sagittarius2': 'Sag. II',
     'hercules': 'Hercules',
     'crater2': 'Crater II'}
 
@@ -104,11 +149,13 @@ def plot_all_dwarfs(infile):
     colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5)]
     labels = [r"$s$-wave, ", r"$p$-wave, ", r"$d$-wave, ", r"Sommerfeld, "]
 
+    configure_plot_params()
+
     fig, ax = plt.subplots(figsize=(25, 25))
 
     for errorcolor, angle_jfacs, a in zip(['xkcd:slate grey', 'xkcd:black'], infile, [r"$0.5^\circ$", r"$10^\circ$"]):
     # for errorcolor, angle_jfacs, a in zip(['xkcd:black'], infile, [r"$10^\circ$"]):
-        jfacs = np.load(angle_jfacs)
+        jfacs = np.load(angle_jfacs, allow_pickle=True)
         jfacs[:, 0] = set_x_value_names(fix_names(jfacs[:, 0]))
 
         js = jfacs[np.arange(0, len(jfacs), 4)]
@@ -117,7 +164,7 @@ def plot_all_dwarfs(infile):
         jsom = jfacs[np.arange(3, len(jfacs), 4)]
 
         for d, c, l in zip([js, jp, jd, jsom], colors, labels):
-            error_plot(ax, d, color=c, label=l+a, ec=errorcolor, mec=errorcolor)
+            error_plot(ax, d, color=c, label=l+a, ec=errorcolor, mec=errorcolor, ms=12, lw=2.7)
 
     for idwarf in np.arange(0, len(js)+2, 2):
         ax.axvline(idwarf, color='xkcd:light gray', lw=48, zorder=-100)
@@ -130,42 +177,15 @@ def plot_all_dwarfs(infile):
     ax.yaxis.set_minor_locator(AutoMinorLocator())
     ax.tick_params(axis='y', which='minor', left=True, right=True)
     ax.xaxis.set_tick_params(which='minor', bottom=False)
-    plt.xticks(rotation=90, fontsize=15)
+    plt.xticks(rotation=90)
     ax.yaxis.grid(color='gray', linestyle='dashed')
     ax.yaxis.grid(which='minor', linestyle=':', linewidth='0.5', color='gray')
 
-    mpl.rcParams['axes.labelsize'] = 'xx-large'
-    mpl.rcParams['axes.titlesize'] = 80
-    mpl.rcParams['ytick.labelsize'] = 'x-large'
-    mpl.rcParams['xtick.labelsize'] = 'x-large'
-
-    plt.ylabel(r"$\log_{10}\,\,\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$", fontsize=20)
-    plt.legend(markerscale=2, prop={'size': 15}, frameon=True, loc='lower left')
+    plt.ylabel(r"$\log_{10}\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$")
+    plt.legend(markerscale=1.25, prop={'size': 24}, frameon=True, loc='lower right')
 
     outfile = infile[0][:-9] + '_working_plot.pdf'
     fig.savefig(outfile, bbox_inches='tight')
-
-
-def lighten_color(color, amount=0.5):
-    """
-    Lightens the given color by multiplying (1-luminosity) by the given amount.
-
-    Input can be matplotlib color string, hex string, or RGB tuple. Make amount > 1 to darken.
-
-    Examples:
-    >> lighten_color('g', 0.3)
-    >> lighten_color('#F034A3', 0.6)
-    >> lighten_color((.3,.55,.1), 0.5)
-
-    """
-    import matplotlib.colors as mc
-    import colorsys
-    try:
-        c = mc.cnames[color]
-    except KeyError:
-        c = color
-    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
-    return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
 
 
 def compare_plot(ax, data, colors, labels):
@@ -208,12 +228,12 @@ def compare_to_others_plot():
     """Generate plots to compare to other papers."""
     fig, ax = plt.subplots(figsize=(20, 20))
 
-    my_data = "./j_factors/tot_j_factors/tot_j_fac_inclusive_half.npy"
-    jfacs = np.load(my_data)
+    my_data = "./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_half.npy"
+    jfacs = np.load(my_data, allow_pickle=True)
     jfacs[:, 0] = fix_names(jfacs[:, 0])
     js = jfacs[np.arange(0, len(jfacs), 4)]
 
-    others_data = np.load('./j_factors/compare_values_j_factors.npz')
+    others_data = np.load('./total_j_factors/j_factors/compare_values_j_factors.npz')
 
     # s wave, to 0.5 degree
     data = [js, others_data['geringer2015'], others_data['pace2018'], others_data['walker2015'], others_data['caldwell2016'], others_data['koposov2018']]
@@ -222,13 +242,13 @@ def compare_to_others_plot():
 
     compare_plot(ax, data, colors, labels)
     plt.title(r"Comparison of $J$-factors at $0.5^\circ$ for $s$-wave annihilation")
-    outfile = './j_factors/comparison_plot_s_half.pdf'
+    outfile = './total_j_factors/j_factors/comparison_plot_s_half.pdf'
     fig.savefig(outfile, bbox_inches='tight')
 
     # s wave, total
     plt.clf()
     fig, ax = plt.subplots(figsize=(20, 20))
-    my_data = "./j_factors/tot_j_factors/tot_j_fac_inclusive_10.npy"
+    my_data = "./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_10.npy"
     jfacs = np.load(my_data)
     jfacs[:, 0] = fix_names(jfacs[:, 0])
     js = jfacs[np.arange(0, len(jfacs), 4)]
@@ -240,7 +260,7 @@ def compare_to_others_plot():
 
     compare_plot(ax, data, colors, labels)
     plt.title(r"Comparison of total integrated $J$-factors for $s$-wave annihilation")
-    outfile = './j_factors/comparison_plot_s_total.pdf'
+    outfile = './total_j_factors/j_factors/comparison_plot_s_total.pdf'
     fig.savefig(outfile, bbox_inches='tight')
 
     # som wave, total
@@ -253,7 +273,7 @@ def compare_to_others_plot():
 
     compare_plot(ax, data, colors, labels)
     plt.title(r"Comparison of total integrated $J$-factors for Sommerfeld-enhanced annihilation")
-    outfile = './j_factors/comparison_plot_som_total.pdf'
+    outfile = './total_j_factors/j_factors/comparison_plot_som_total.pdf'
     fig.savefig(outfile, bbox_inches='tight')
 
 
@@ -265,6 +285,6 @@ if __name__ == '__main__':
         25: '25',
         50: '50'
     }
-    plot_all_dwarfs([f"/Users/runburg/github/dm_halos/j_factors/tot_j_factors/tot_j_fac_inclusive_{angledict[ub]}.npy" for ub in bounds])
+    plot_all_dwarfs([f"/Users/runburg/github/dm_halos/total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_{angledict[ub]}.npy" for ub in bounds])
     # sorted_j_factors("./j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[10] + ".npy")
     compare_to_others_plot()
