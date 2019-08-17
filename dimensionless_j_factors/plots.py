@@ -31,11 +31,11 @@ plot.rc('font', family='serif')
 file = 'df_nfw'
 g = {}
 for key in ['g_s', 'g_p', 'g_d', 'g_som']:
-    with np.load(file+'/'+file+'_'+key+'.txt', 'rb') as infile:
+    with np.load('./dimensionless_j_factors/'+file+'/'+file+'_'+key+'.txt', 'rb', allow_pickle=True) as infile:
         g[key] = infile[key]
         g['r'] = infile['r']
 
-with np.load(file+'/'+file+"_h_values.txt") as infile:
+with np.load('./dimensionless_j_factors/'+file+'/'+file+"_h_values.txt", allow_pickle=True) as infile:
     hsn = infile['hs']
     hpn = infile['hp']
     hdn = infile['hd']
@@ -75,7 +75,7 @@ for line in leg.get_lines():
 plot.tick_params('x', which='both', direction='in', bottom=True, top=True)
 plot.tick_params('y', which='both', direction='in', left=True, right=True)
 
-p.savefig(file+'/'+file+"_p2values.pdf", bbox_inches="tight")
+p.savefig('./dimensionless_j_factors/'+file+'/'+file+"_p2values.pdf", bbox_inches="tight")
 
 # h plot
 xx = 7
@@ -101,7 +101,7 @@ for line in leg.get_lines():
 plot.tick_params('x', which='both', direction='in', bottom=True, top=True)
 plot.tick_params('y', which='both', direction='in', left=True, right=True)
 
-p.savefig(file+'/'+file+"_jfuncs_log.pdf", bbox_inches='tight')
+p.savefig('./dimensionless_j_factors/'+file+'/'+file+"_jfuncs_log.pdf", bbox_inches='tight')
 
 # h plot end behavior
 p = plot.figure()
@@ -125,4 +125,4 @@ for line in leg.get_lines():
 plot.tick_params('x', which='both', direction='in', bottom=True, top=True)
 plot.tick_params('y', which='both', direction='in', left=True, right=True)
 
-p.savefig(file+'/'+file+"_jfuncs_zoom.pdf", bbox_inches='tight')
+p.savefig('./dimensionless_j_factors/'+file+'/'+file+"_jfuncs_zoom.pdf", bbox_inches='tight')

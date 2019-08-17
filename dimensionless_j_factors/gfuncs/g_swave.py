@@ -17,51 +17,44 @@ import mpmath as mp
 
 
 def gs_wave(file):
-    """Perform transformation to function of velocity and radius."""
-    with np.load(file+"_nounits.txt", 'rb') as npzfile:
+    """Perform integration of velocity integrals."""
+    with np.load(file+"_nounits.txt", 'rb', allow_pickle=True) as npzfile:
         r = npzfile['r']
-        v = npzfile['v']
-        fe = npzfile['fe']
+        v = npzfile['v'].astype(np.float)
+        fe = npzfile['fe'].astype(np.float)
 
     # create a list of unique r values and how often they occur
-    r_unique = np.unique(r)
-
-    i = 0
+    r_unique = np.unique(r, return_index=True)
     # initial arrays for grabbing parts of the data
     v_temp = []
-    func = []
-    rf = []
+    integrand = []
     g_swave = []
     # loop through all of the unique values of r
-    for rad in r_unique:
+    for i, (rad, j) in enumerate(np.array(r_unique).T, start=1):
         # for each set of (v,fe) that correspond to the given r, create [x]
         # and [y]
         # for num. int.
-        while rad == r[i]:
-            # [x] for integration
-            v_temp.append(v[i])
-            # [y] for integration
-            func.append(fe[i]*v[i]*v[i])
-            i += 1
-            # abort final loop to avoid out of bounds error
-            if i >= len(r):
-                break
+        if i == len(r_unique[0]):
+            i=None
+        else:
+            i=r_unique[1][i]
+
+        v_temp = v[j:i]
+        integrand = v_temp**2 * fe[j:i]
         # stores the value of the velocity integration
         # this will change when not doing s-wave
-        vels = np.array(v_temp).astype(np.float)
-        if len(v_temp) > 3:
-            g_sfunc = interpolate.interp1d(vels, func, kind='cubic', fill_value='extrapolate')
-            g_swave.append(16*np.pi**2*integrate.quad(g_sfunc, 0, vels[-1], points=vels, limit=100*len(v_temp))[0]**2)
-        # print('{}\t{}\t{}'.format(len(v_temp), v_temp[0], v_temp[-1]))
-        else:
-            g_swave.append(16*mp.pi**2*(integrate.simps(func, v_temp))**2)
-        v_temp.clear()
-        func.clear()
-        rf.append(rad)
+        try:
+            # func = interpolate.interp1d(v_temp, integrand, kind='cubic', fill_value='extrapolate')
+            # g_swave.append(16*mp.pi**2*integrate.quad(func, 0, v_temp[-1], points=v_temp, limit=10000)[0]**2)
+            g_swave.append(16*mp.pi**2*(integrate.simps(integrand, v_temp))**2)
+        except ValueError:
+            print(i, j, integrand, v_temp)
+            g_swave.append(16*mp.pi**2*(integrate.trapz(integrand, v_temp))**2)
 
-    with open("/Users/runburg/github/dm_halos/df_nfw/df_nfw_g_s.txt", 'wb') as outfile:
-        np.savez(outfile, g_s=np.array(g_swave), r=np.array(rf))
+
+    with open("./dimensionless_j_factors/df_nfw/df_nfw_g_s.txt", 'wb') as outfile:
+        np.savez(outfile, g_s=np.array(g_swave), r=np.array(r_unique[0]))
 
 
 if __name__ == '__main__':
-    gs_wave('/Users/runburg/github/dm_halos/df_nfw/df_nfw')
+    gs_wave('./dimensionless_j_factors/df_nfw/df_nfw')

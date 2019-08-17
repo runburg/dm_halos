@@ -13,6 +13,7 @@ for each dwarf in /j_factors/dwarfs.
 from scipy import interpolate, integrate
 import numpy as np
 import matplotlib.pyplot as plt
+np.seterr(all='raise')
 
 
 def weighted_average(listofvalues):
@@ -107,10 +108,10 @@ def weighted_median(values, plot=False, dwarf=None):
     ave_jvals = temp_j[np.searchsorted(temp_j[:, 0], 0.5, side='left')]
     up_jvals = temp_j[np.searchsorted(temp_j[:, 0], .5+.34, side='right')][1]
 
-    if plot:
-        # index = np.searchsorted(temp_j[:, 0], 0.5, side='left')
-        # print(temp_j[index-10:index+10][:, [0, 1, 3, 4]])
-        plot_parameter_values(temp_j, dwarf)
+    # if plot:
+    #     # index = np.searchsorted(temp_j[:, 0], 0.5, side='left')
+    #     # print(temp_j[index-10:index+10][:, [0, 1, 3, 4]])
+    #     plot_parameter_values(temp_j, dwarf)
 
     # if dwarf == 'sagittarius2' or dwarf == 'horologium1':
     #     index = np.searchsorted(temp_j[:, 0], 0.5, side='left')
@@ -150,7 +151,7 @@ def integrated_j_factor(list, upper_bound, wave, plot=False, dwarf=None):
             n = -1
             jtot = jsomfunc(ub)
             # don't have a working angular distribution of jsom due to instabilities in the numerical integrsation
-            jtot = 1.01
+            # jtot = 1.01
 
         c = 299792.458  # km/s
         g_n = float(4.303E-6)  # kpc * (km/s)^2 / M_solar
@@ -167,7 +168,7 @@ def integrated_j_factor(list, upper_bound, wave, plot=False, dwarf=None):
         results = weighted_median(temp_j, plot=plot, dwarf=dwarf)
         # if (dwarf == 'tucana2_des' or dwarf == 'tucana2_k15'):
         #     print('{}::low: {}, ave: {}, up: {}, d: {}, r_s: {}, rho_s: {}'.format(dwarf, *results))
-        return results
+        return results, ub
 
 
 def check_integrated_js():
@@ -191,7 +192,7 @@ def check_integrated_js():
 def load_funcs():
     """Create functions for computing j-factors."""
     global jsfunc, jpfunc, jdfunc, jsomfunc
-    with np.load('/Users/runburg/github/dm_halos/j_factors/int_dimless_j_fac.npy', 'rb') as infile:
+    with np.load('/Users/runburg/github/dm_halos/total_j_factors/j_factors/int_dimless_j_fac.npy', 'rb') as infile:
         tildetheta = infile['angle']
         js = infile['js']
         jp = infile['jp']
@@ -210,14 +211,16 @@ def main():
     # dwarf names to compute j_factors for
     dwarflist_exclude = ['cetus', 'eridanus2', 'leot', 'and1', 'and3', 'and5', 'and7', 'and14', 'and18', 'tucana3', 'triangulum2', 'segue2', 'hydra2', 'leo4', 'leo5', 'pegasus3', 'pisces2', 'draco2', 'grus1', 'horologium1_des', 'reticulum2_des', 'tucana2_k15']
 
-    dwarflist = np.load('./j_factors/data2_jfac_extra_v1.npy')['name_short']
+    dwarflist = np.load('./total_j_factors/j_factors/data2_jfac_extra_v1.npy')['name_short']
     dwarflist = np.concatenate((np.setdiff1d(dwarflist, dwarflist_exclude), np.array(['crater2', 'hydrus1', 'sagittarius2'])))
 
-    bounds = [0.5, 10]
+    bounds = [0.1, 0.2, 0.5, 10]
     waves = ['s', 'p', 'd', 'som']
 
     angledict = {
         0.5: 'half',
+        0.1: 'tenth',
+        0.2: 'twotenth',
         10: '10',
         25: '25',
         50: '50'
@@ -228,19 +231,24 @@ def main():
         jfac = []
         # dwarflist = dwarflist_exclude
         for dwarf in dwarflist:
-            data = np.load('./j_factors/dwarfs/'+dwarf+'_chain.npy')
+            data = np.load('./total_j_factors/j_factors/dwarfs/'+dwarf+'_chain.npy')
             for wave in waves:
                 plot = False
                 # if dwarf == 'comaberenices' and wave == 'som' and ub == 10:
                 #     plot = True
-                l, a, u, d, r_s, rho_s = integrated_j_factor(data, ub, wave, plot=plot, dwarf=dwarf)
+                (l, a, u, d, r_s, rho_s), ub_new = integrated_j_factor(data, ub, wave, plot=plot, dwarf=dwarf)
                 # if dwarf == 'reticulum2_k15' or dwarf == 'reticulum2_des':
                 #     print('{}, {}: {}'.format(dwarf, wave, r_s/d))
-                jfac.append([dwarf, wave, np.log10(l), np.log10(a), np.log10(u)])
+                try:
+                    jfac.append([dwarf, wave, np.log10(l), np.log10(a), np.log10(u)])
+                except FloatingPointError:
+                    print(dwarf, ub, wave, ub_new)
+                    print(l, a, u, d, r_s, rho_s)
+                    jfac.append([dwarf, wave, np.log10(l), np.log10(a), np.log10(u)])
                 # if (dwarf == 'comaberenices' or dwarf == 'draco1' or dwarf == 'reticulum2_k15' or dwarf == 'ursaminor' or dwarf == 'segue1') and wave == 'som' and ub == 10:
                 #     print('{}, {}, {}, {}, {}'.format(dwarf, wave, d, r_s, rho_s))
 
-        outfile = "/Users/runburg/github/dm_halos/j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[ub]
+        outfile = "/Users/runburg/github/dm_halos/total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[ub]
 
         np.save(outfile + ".npy", np.array(jfac))
         np.savetxt(outfile + ".txt", np.array(jfac), fmt='%s')

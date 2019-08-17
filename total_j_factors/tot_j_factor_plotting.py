@@ -10,6 +10,9 @@ Date: 26-06-2019 17:08
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from matplotlib.container import ErrorbarContainer
+from matplotlib.lines import Line2D
+from matplotlib.collections import LineCollection
 from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
                                AutoMinorLocator)
 
@@ -77,7 +80,7 @@ def sorted_j_factors(angle_jfacs):
     np.savetxt(angle_jfacs[:-4] + '_sorted_names.txt', sorted_names, fmt='%s', delimiter=' & ', newline=' \\\\\hline\n')
 
 
-def error_plot(axs, data, offset=0, color='r', label=None, ec=0, mec=None, ms=6, lw=2):
+def error_plot(axs, data, offset=0, fmt='D', color='r', label=None, ec=0, mec=None, ms=6, lw=2):
     """Generate a scatterplot with error bars for the given j-factor data."""
     try:
         ave = data[:, 3].astype(np.float)
@@ -92,41 +95,43 @@ def error_plot(axs, data, offset=0, color='r', label=None, ec=0, mec=None, ms=6,
     try:
         x = data[:, 0].astype(np.float) + offset
     except ValueError:
+        print('No offset', label)
+        print(data[:, 0])
         x = data[:, 0]
     except IndexError:
         x = data[0].astype(np.float) + offset
 
-    axs.errorbar(x, ave, yerr=[low, high], fmt='D', ecolor=ec, mec=mec, color=color, mew=lw, capsize=lw+5, label=label, ms=ms, lw=lw)
+    axs.errorbar(x, ave, yerr=[low, high], fmt=fmt, ecolor=ec, mec=mec, color=color, mew=lw, capsize=lw+5, label=label, ms=ms, lw=lw)
 
 
 def fix_names(name_list, get_dict=False):
     """Fix names for plotting of dwarfs."""
     name_dict = {
-    'ursamajor2': 'U. Major II',
-    'willman1': 'Willman I',
-    'horologium1_k15': 'Hor. I',
-    'segue1': 'Segue I',
-    'comaberenices': 'Com. Ber.',
-    'tucana2_des': 'Tucana II',
-    'reticulum2_k15': 'Ret. II',
-    'draco1': 'Draco I',
-    'hydrus1': 'Hydrus I',
-    'ursaminor': 'U. Minor',
-    'sculptor': 'Sculptor',
-    'carina2': 'Carina II',
-    'aquarius2': 'Aquarius II',
-    'bootes1': 'Bootes I',
-    'ursamajor1': 'U. Major I',
-    'fornax': 'Fornax',
-    'canesvenatici2': 'Can. Ven. II',
-    'carina': 'Carina',
-    'sextans': 'Sextans',
-    'leo2': 'Leo II',
-    'leo1': 'Leo I',
-    'canesvenatici1': 'Can. Ven. I',
-    'sagittarius2': 'Sag. II',
-    'hercules': 'Hercules',
-    'crater2': 'Crater II'}
+    'ursamajor2': 'UMaII',
+    'willman1': 'Wil1',
+    'horologium1_k15': 'HorI',
+    'segue1': 'Seg1',
+    'comaberenices': 'CBerI',
+    'tucana2_des': 'TucII',
+    'reticulum2_k15': 'RetII',
+    'draco1': 'DraI',
+    'hydrus1': 'HyiI',
+    'ursaminor': 'UMiI',
+    'sculptor': 'SclI',
+    'carina2': 'CarII',
+    'aquarius2': 'AquII',
+    'bootes1': 'BooI',
+    'ursamajor1': 'UMaI',
+    'fornax': 'FnxI',
+    'canesvenatici2': 'CVenII',
+    'carina': 'CarI',
+    'sextans': 'SxtI',
+    'leo2': 'LeoII',
+    'leo1': 'LeoI',
+    'canesvenatici1': 'CVenI',
+    'sagittarius2': 'SgrII',
+    'hercules': 'HerI',
+    'crater2': 'CraII'}
 
     if get_dict:
         return name_dict
@@ -147,13 +152,20 @@ def set_x_value_names(data, get_dict=False):
 def plot_all_dwarfs(infile):
     """Generate the plots for all the dwarfs in the given file."""
     colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5)]
-    labels = [r"$s$-wave, ", r"$p$-wave, ", r"$d$-wave, ", r"Sommerfeld, "]
+    labels = [r"$s$-wave", r"$p$-wave", r"$d$-wave", r"Sommerfeld"]
+    error_colors = [lighten_color('xkcd:black', 0.4), lighten_color('xkcd:black', 0.6), lighten_color('xkcd:black', 0.8), 'xkcd:black']
+    angle_labels = [r"$0.1^\circ$",r"$0.2^\circ$", r"$0.5^\circ$", r"$10^\circ$"]
+    fmts = ['*', 'o', 'h', 'D']
+    # error_colors = ['xkcd:slate gray', 'xkcd:black']
+    # angle_labels = [r"$0.5^\circ$", r"$10^\circ$"]
+    # fmts = ['h', 'D']
 
     configure_plot_params()
 
     fig, ax = plt.subplots(figsize=(25, 25))
 
-    for errorcolor, angle_jfacs, a in zip(['xkcd:slate grey', 'xkcd:black'], infile, [r"$0.5^\circ$", r"$10^\circ$"]):
+    start = len(fmts)//2-len(fmts)+len(fmts) % 2
+    for i, (errorcolor, angle_jfacs, a, fmt) in enumerate(zip(error_colors, infile, angle_labels, fmts), start=start):
     # for errorcolor, angle_jfacs, a in zip(['xkcd:black'], infile, [r"$10^\circ$"]):
         jfacs = np.load(angle_jfacs, allow_pickle=True)
         jfacs[:, 0] = set_x_value_names(fix_names(jfacs[:, 0]))
@@ -164,27 +176,39 @@ def plot_all_dwarfs(infile):
         jsom = jfacs[np.arange(3, len(jfacs), 4)]
 
         for d, c, l in zip([js, jp, jd, jsom], colors, labels):
-            error_plot(ax, d, color=c, label=l+a, ec=errorcolor, mec=errorcolor, ms=12, lw=2.7)
+            error_plot(ax, d, offset=(i+0.5)/(1.5*len(fmts)), color=c, fmt=fmt, ec=errorcolor, mec=errorcolor, ms=12, lw=2.7)
 
+    # add grey stripes
     for idwarf in np.arange(0, len(js)+2, 2):
-        ax.axvline(idwarf, color='xkcd:light gray', lw=48, zorder=-100)
+        ax.axvline(idwarf, color='xkcd:light gray', lw=56, zorder=-100)
 
+    # set ticks and labels
+    ax.set_ylabel(r"$\log_{10}\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$")
     x_labels = set_x_value_names(None, get_dict=True)
-
     ax.set_xticks(list(x_labels.values()))
-    ax.set_xticklabels(list(x_labels.keys()))
+    ax.set_xticklabels(list(x_labels.keys()), rotation=90)
 
+    ax.set_xlim(left=0.5, right=25.5)
     ax.yaxis.set_minor_locator(AutoMinorLocator())
-    ax.tick_params(axis='y', which='minor', left=True, right=True)
+    ax.yaxis.set_tick_params(which='minor', left=True, right=True)
     ax.xaxis.set_tick_params(which='minor', bottom=False)
-    plt.xticks(rotation=90)
+    # ax.xticks(rotation=90)
     ax.yaxis.grid(color='gray', linestyle='dashed')
     ax.yaxis.grid(which='minor', linestyle=':', linewidth='0.5', color='gray')
 
-    plt.ylabel(r"$\log_{10}\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$")
-    plt.legend(markerscale=1.25, prop={'size': 24}, frameon=True, loc='lower right')
+    # make custom legend
+    legend_elements = [Line2D([0], [0], color=c, label=l, lw=12) for c,l in zip(colors, labels)]
+    lw = 2.7
+    ms = 12
+    for ec, l, f in zip(error_colors, angle_labels, fmts):
+        line = Line2D([],[], ls='none', marker=f, mec=ec, color='xkcd:white', label=l, ms=ms, mew=lw, lw=lw)
+        barline = LineCollection(np.empty((2,2,2)), label=l)
+        ebar = ErrorbarContainer((line, [line], [barline]), has_yerr=True)
+        ebar.set_label(l)
+        legend_elements.append(ebar)
 
-    outfile = infile[0][:-9] + '_working_plot.pdf'
+    ax.legend(handles=legend_elements, labels=labels.append(angle_labels), markerscale=1.25, prop={'size': 24}, frameon=True, loc='lower right')
+    outfile = infile[0][:-9] + '_working_plot_all.pdf'
     fig.savefig(outfile, bbox_inches='tight')
 
 
@@ -197,6 +221,7 @@ def compare_plot(ax, data, colors, labels):
         except IndexError:
             d[0] = set_x_value_names([d[0]])[0]
         except KeyError:
+            print('Error with key: ', d[:, 0])
             pass
         error_plot(ax, d, offset=ioffset/(2*len(data)), color=c, label=l, ec=lighten_color(c, amount=1.5), mec=lighten_color(c, amount=1.5))
 
@@ -278,13 +303,18 @@ def compare_to_others_plot():
 
 
 if __name__ == '__main__':
-    bounds = [0.5, 10]
+    bounds = [0.1, 0.2, 0.5, 10]
+    waves = ['s', 'p', 'd', 'som']
+
     angledict = {
         0.5: 'half',
+        0.1: 'tenth',
+        0.2: 'twotenth',
         10: '10',
         25: '25',
         50: '50'
     }
-    plot_all_dwarfs([f"/Users/runburg/github/dm_halos/total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_{angledict[ub]}.npy" for ub in bounds])
+
+    plot_all_dwarfs([f"./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_{angledict[ub]}.npy" for ub in bounds])
     # sorted_j_factors("./j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[10] + ".npy")
     compare_to_others_plot()

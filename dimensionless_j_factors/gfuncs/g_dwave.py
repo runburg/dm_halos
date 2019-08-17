@@ -16,47 +16,44 @@ mp.dps = 25
 
 
 def gd_wave(file):
-    with np.load(file+"_nounits.txt", 'rb') as npzfile:
+    with np.load(file+"_nounits.txt", 'rb', allow_pickle=True) as npzfile:
         r = npzfile['r']
         v = npzfile['v']
         fe = npzfile['fe']
 
     # create a list of unique r values and how often they occur
-    r_unique = np.unique(r)
+    r_unique = np.unique(r, return_index=True)
+
 
     def rho(x):
         return 1/(mp.mpf(x)*(1+mp.mpf(x))**2)
 
-    i = 0
+
     # initial arrays for grabbing parts of the data
     v_temp = []
-    func1 = []
-    func2 = []
-    rf = []
+    integrand1 = []
+    integrand2 = []
     g_dwave = []
     # loop through all of the unique values of r
-    for rad in r_unique:
+    for i, (rad, j) in enumerate(np.array(r_unique).T, start=1):
         # for each set of (v,fe) that correspond to the given r, create [x]
         # and [y]
         # for num. int.
-        while rad == r[i]:
-            # [x] for integration
-            v_temp.append(v[i])
-            # [y] for integration
-            func1.append(fe[i]*v[i]**6)
-            func2.append(fe[i]*v[i]**4)
-            i += 1
-            # abort final loop to avoid out of bounds error
-            if i >= len(r):
-                break
+        if i == len(r_unique[0]):
+            i=None
+        else:
+            i=r_unique[1][i]
+
+        v_temp = v[j:i]
+        integrand1 = 2*integrate.simps(4*np.pi*v_temp**6 * fe[j:i]/rho(rad), v_temp)
+        integrand2 = 5/3*integrate.simps(4*np.pi*v_temp**4 * fe[j:i]/rho(rad), v_temp)**2
         # stores the value of the velocity integration
         # this will change when not doing s-wave
-        g_dwave.append(8*mp.pi*rho(rad)*integrate.simps(func1, v_temp)
-                       + 160*mp.pi**2 / 3*integrate.simps(func2, v_temp)**2)
-        v_temp.clear()
-        func1.clear()
-        func2.clear()
-        rf.append(rad)
+        g_dwave.append(1/(4*np.pi)**2*rho(rad)**2*(integrand1+integrand2))
 
-    with open("g_d.txt", 'wb') as outfile:
-        np.savez(outfile, g_d=np.array(g_dwave), r=np.array(rf))
+    with open("./dimensionless_j_factors/df_nfw/df_nfw_g_d.txt", 'wb') as outfile:
+        np.savez(outfile, g_d=np.array(g_dwave), r=np.array(r_unique[0]))
+
+
+if __name__ == '__main__':
+    gd_wave('./dimensionless_j_factors/df_nfw/df_nfw')
