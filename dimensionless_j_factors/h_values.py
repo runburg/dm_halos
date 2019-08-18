@@ -38,7 +38,7 @@ def hval():
     print('dp, ', dp)
     dd = integrate.quad(lambda x: x * h.hd(x), 0.001, 25, limit=limit)[0]
     print('dd, ', dd)
-    dsom = integrate.quad(lambda x: x * h.hsom(x), 0.001, 25, limit=limit)[0]
+    dsom = integrate.quad(lambda x: x * h.hsom(x), 0.0005, 25, limit=limit)[0]
     print('dsom, ', dsom)
     nst = integrate.quad(lambda x: x**2*h.hts(x), 0, 25, limit=limit)[0]
     ns = integrate.quad(lambda x: x**2*h.hs(x), 0, 25, limit=limit)[0]

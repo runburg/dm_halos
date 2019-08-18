@@ -33,11 +33,11 @@ def dimensionless_integrated_j_factor():
     for angle in ub:
         index = np.searchsorted(tildetheta, angle, side='left')
         limit = 1000
-        jtot_s.append(integrate.quad(lambda y: y*jsfunc(y), 0.001, angle, points=tildetheta[:index], limit=limit, full_output=1)[0])
+        jtot_s.append(integrate.quad(lambda y: y*jsfunc(y), tildetheta[0], angle, points=tildetheta[:index], limit=limit, full_output=1)[0])
         # print(jtot_s[-1])
-        jtot_p.append(integrate.quad(lambda y: y*jpfunc(y), 0.001, angle, points=tildetheta[:index], limit=limit, full_output=1)[0])
-        jtot_d.append(integrate.quad(lambda y: y*jdfunc(y), 0.001, angle, points=tildetheta[:index], limit=limit, full_output=1)[0])
-        jtot_som.append(integrate.quad(lambda y: y*jsomfunc(y), 0.001, angle, points=tildetheta[:index], limit=limit, full_output=1)[0])
+        jtot_p.append(integrate.quad(lambda y: y*jpfunc(y), tildetheta[0], angle, points=tildetheta[:index], limit=limit, full_output=1)[0])
+        jtot_d.append(integrate.quad(lambda y: y*jdfunc(y), tildetheta[0], angle, points=tildetheta[:index], limit=limit, full_output=1)[0])
+        jtot_som.append(integrate.quad(lambda y: y*jsomfunc(y), tildetheta[0], angle, points=tildetheta[:index], limit=limit, full_output=1)[0])
 
     return np.array([ub, jtot_s, jtot_p, jtot_d, jtot_som])
 

@@ -81,7 +81,7 @@ def hts(y):
 
 
 def h_integral(g_function, theta, divs=None):
-    return integrate.quad(lambda x: g_function(x)/(np.sqrt(1-(theta/x)**2)), theta*1.000001, 35, limit=5000, points=divs, epsabs=1e-05, epsrel=1e-05)[0]
+    return integrate.quad(lambda x: g_function(x)/(np.sqrt(1-(theta/x)**2)), theta*1.000001, 35, limit=10000, points=divs, epsabs=1e-05, epsrel=1e-05)[0]
 
 
 # -----------------------------------------------------------------------------

@@ -13,7 +13,6 @@ for each dwarf in /j_factors/dwarfs.
 from scipy import interpolate, integrate
 import numpy as np
 import matplotlib.pyplot as plt
-np.seterr(all='raise')
 
 
 def weighted_average(listofvalues):
@@ -199,10 +198,10 @@ def load_funcs():
         jd = infile['jd']
         jsom = infile['jsom']
 
-    jsfunc = interpolate.interp1d(tildetheta, js, kind='cubic', fill_value='extrapolate')
-    jpfunc = interpolate.interp1d(tildetheta, jp, kind='cubic', fill_value='extrapolate')
-    jdfunc = interpolate.interp1d(tildetheta, jd, kind='cubic', fill_value='extrapolate')
-    jsomfunc = interpolate.interp1d(tildetheta, jsom, kind='quadratic', fill_value='extrapolate')
+    jsfunc = interpolate.interp1d(tildetheta, js, kind='slinear', fill_value='extrapolate')
+    jpfunc = interpolate.interp1d(tildetheta, jp, kind='slinear', fill_value='extrapolate')
+    jdfunc = interpolate.interp1d(tildetheta, jd, kind='slinear', fill_value='extrapolate')
+    jsomfunc = interpolate.interp1d(tildetheta, jsom, kind='slinear', fill_value='extrapolate')
 
 
 def main():
