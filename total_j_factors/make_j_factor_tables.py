@@ -53,7 +53,7 @@ for angle in angles:
         j_temp = jfacs[np.arange(i, len(jfacs), 4)]
         if angle is angles[0]:
             jfactor.append(fix_names(j_temp[:, 0]))
-        jfactor.append([rf"${np.round(ave.astype(np.float),2)}^{{+{np.round(high.astype(np.float)-ave.astype(np.float),2)}}}_{{-{np.round(ave.astype(np.float)-low.astype(np.float),2)}}}$" for low, ave, high in zip(j_temp[:, 2], j_temp[:, 3], j_temp[:, 4])])
+        jfactor.append([rf"${format(round(ave.astype(np.float),2), '.2f')}^{{+{format(round(high.astype(np.float)-ave.astype(np.float),2), '.2f')}}}_{{-{format(round(ave.astype(np.float)-low.astype(np.float),2), '.2f')}}}$" for low, ave, high in zip(j_temp[:, 2], j_temp[:, 3], j_temp[:, 4])])
 
 np.savetxt('./total_j_factors/j_factors/tables/J_s_table.txt', np.array(js).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
 np.savetxt('./total_j_factors/j_factors/tables/J_p_table.txt', np.array(jp).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
