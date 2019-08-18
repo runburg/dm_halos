@@ -44,9 +44,9 @@ def gs_wave(file):
         # stores the value of the velocity integration
         # this will change when not doing s-wave
         try:
-            # func = interpolate.interp1d(v_temp, integrand, kind='cubic', fill_value='extrapolate')
-            # g_swave.append(16*mp.pi**2*integrate.quad(func, 0, v_temp[-1], points=v_temp, limit=10000)[0]**2)
-            g_swave.append(16*mp.pi**2*(integrate.simps(integrand, v_temp))**2)
+            func = interpolate.interp1d(v_temp, integrand, kind='cubic', fill_value='extrapolate')
+            g_swave.append(16*mp.pi**2*integrate.quad(func, 0, v_temp[-1], points=v_temp, limit=10000)[0]**2)
+            # g_swave.append(16*mp.pi**2*(integrate.simps(integrand, v_temp))**2)
         except ValueError:
             print(i, j, integrand, v_temp)
             g_swave.append(16*mp.pi**2*(integrate.trapz(integrand, v_temp))**2)
