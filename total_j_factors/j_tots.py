@@ -128,7 +128,7 @@ def integrated_j_factor(list, upper_bound, wave, plot=False, dwarf=None):
     """Return the value of the integrated j-factor for wave annihilation to angle upper_bound in degrees."""
     temp_j = []
     # changeunits_to_gevcm = 37.96**2 * 10**(-18) * 1000 * 3.086 * 10**18
-    changeunits_to_gevcm = float(3.1E+21)**(-5) * (float(3E+8)**2 * float(1.98E+30) * float(6.26E+9))**2
+    changeunits_to_gevcm = float(3.1E+21)**(-5) * (float(2.99E+8)**2 * float(1.98E+30) * float(6.2E+9))**2
     for x in list:
         n = 0
         ub = upper_bound/180*np.pi*x[1]/10**x[2]
