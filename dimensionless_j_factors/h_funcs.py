@@ -92,9 +92,9 @@ def h_integral(g_function, theta, divs=None):
 def hs(y):
     """Return the computed h_s."""
     # divs gives the divergences (at interpolation points)
-    # divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
+    divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
     # return integrate.quad(lambda x: gsfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000001, g['r'][-1], points=divs, limit=100*len(g['r']), epsabs=1e-03, epsrel=1e-03)[0]
-    return h_integral(gsfunc, y)
+    return h_integral(gsfunc, y, divs=divs)
 
 
 # -----------------------------------------------------------------------------
@@ -104,9 +104,9 @@ def hs(y):
 
 def hp(y):
     """Return h_p."""
-    # divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
+    divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
     # return integrate.quad(lambda x: gpfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000001, g['r'][-1], points=divs, limit=100*len(g['r']), epsabs=1e-03, epsrel=1e-03)[0]
-    return h_integral(gpfunc, y)
+    return h_integral(gpfunc, y, divs=divs)
 
 
 # -----------------------------------------------------------------------------
@@ -116,9 +116,9 @@ def hp(y):
 
 def hd(y):
     """Return h_d."""
-    # divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
+    divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
     # return integrate.quad(lambda x: gdfunc(x)/(np.sqrt(1-(y/(x))**2)), y*1.00000001, g['r'][-1], points=divs, limit=100*len(g['r']), epsabs=1e-03, epsrel=1e-03)[0]
-    return h_integral(gdfunc, y)
+    return h_integral(gdfunc, y, divs=divs)
 
 
 # -----------------------------------------------------------------------------
@@ -128,6 +128,6 @@ def hd(y):
 
 def hsom(y):
     """Return h_som."""
-    # divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
+    divs = g['r'][np.searchsorted(g['r'], y, side="right"):-2]
     # return integrate.quad(lambda x: gsomfunc(x)/(np.sqrt(1-(y/x)**2)), y*1.00000000001, g['r'][-1], points=divs, limit=100*len(g['r']), epsabs=1e-03, epsrel=1e-03)[0]
-    return h_integral(gsomfunc, y)
+    return h_integral(gsomfunc, y, divs=divs)
