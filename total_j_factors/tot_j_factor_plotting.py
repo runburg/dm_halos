@@ -22,7 +22,7 @@ def configure_plot_params(fontsize=20, spacing=0.2):
     plt.rc('font', family='serif')
 
     mpl.rcParams['font.size'] = fontsize
-    mpl.rcParams['axes.labelsize'] = 'x-large'
+    mpl.rcParams['axes.labelsize'] = 'xx-large'
     mpl.rcParams['axes.titlesize'] = 'xx-large'
 
     mpl.rcParams['figure.subplot.wspace'] = spacing
@@ -156,9 +156,11 @@ def plot_all_dwarfs(infile):
     error_colors = [lighten_color('xkcd:black', 0.4), lighten_color('xkcd:black', 0.6), lighten_color('xkcd:black', 0.8), 'xkcd:black']
     angle_labels = [r"$0.1^\circ$",r"$0.2^\circ$", r"$0.5^\circ$", r"$10^\circ$"]
     fmts = ['*', 'o', 'h', 'D']
-    # error_colors = ['xkcd:slate gray', 'xkcd:black']
-    # angle_labels = [r"$0.5^\circ$", r"$10^\circ$"]
-    # fmts = ['h', 'D']
+
+    if len(infile)<4:
+        error_colors = ['xkcd:slate gray', 'xkcd:black']
+        angle_labels = [r"$0.5^\circ$", r"$10^\circ$"]
+        fmts = ['h', 'D']
 
     configure_plot_params()
 
@@ -192,7 +194,7 @@ def plot_all_dwarfs(infile):
     ax.yaxis.set_minor_locator(AutoMinorLocator())
     ax.yaxis.set_tick_params(which='minor', left=True, right=True)
     ax.xaxis.set_tick_params(which='minor', bottom=False)
-    # ax.xticks(rotation=90)
+
     ax.yaxis.grid(color='gray', linestyle='dashed')
     ax.yaxis.grid(which='minor', linestyle=':', linewidth='0.5', color='gray')
 
@@ -208,12 +210,14 @@ def plot_all_dwarfs(infile):
         legend_elements.append(ebar)
 
     ax.legend(handles=legend_elements, labels=labels.append(angle_labels), markerscale=1.25, prop={'size': 24}, frameon=True, loc='lower right')
-    outfile = infile[0][:-9] + '_working_plot_all.pdf'
+    outfile = infile[0][:-9] + '_working_plot.pdf'
     fig.savefig(outfile, bbox_inches='tight')
 
 
 def compare_plot(ax, data, colors, labels):
     """Generate the plot for the comparison to other results."""
+    configure_plot_params()
+
     start = len(data)//2-len(data)+len(data) % 2
     for ioffset, (d, c, l) in enumerate(zip(data, colors, labels), start=start):
         try:
@@ -225,17 +229,12 @@ def compare_plot(ax, data, colors, labels):
             pass
         error_plot(ax, d, offset=ioffset/(2*len(data)), color=c, label=l, ec=lighten_color(c, amount=1.5), mec=lighten_color(c, amount=1.5))
 
-    mpl.rcParams['axes.labelsize'] = 'xx-large'
-    mpl.rcParams['axes.titlesize'] = 25
-    mpl.rcParams['ytick.labelsize'] = 'x-large'
-    mpl.rcParams['xtick.labelsize'] = 'x-large'
-
     x_labels = set_x_value_names(None, get_dict=True)
 
+    ax.set_xlim(left=0.5, right=25.5)
     ax.set_xticks(list(x_labels.values()))
-    ax.set_xticklabels(list(x_labels.keys()))
+    ax.set_xticklabels(list(x_labels.keys()), rotation=90)
     ax.xaxis.set_tick_params(which='minor', bottom=False)
-    plt.xticks(rotation=90, fontsize=15)
 
     ax.yaxis.set_minor_locator(AutoMinorLocator())
     ax.tick_params(axis='y', which='minor', left=True, right=True)
@@ -245,12 +244,13 @@ def compare_plot(ax, data, colors, labels):
     for idwarf in np.arange(1, len(data[0])+2, 2):
         ax.axvline(idwarf, color='xkcd:light grey', lw=40, zorder=-100)
 
-    plt.ylabel(r"$\log_{10}\,\,\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$", fontsize=20)
-    plt.legend(markerscale=2, prop={'size': 15}, frameon=True, loc='lower left')
+    ax.set_ylabel(r"$\log_{10}\,\,\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$")
+    ax.legend(markerscale=1.25, prop={'size': 20}, frameon=True, loc='lower right')
 
 
 def compare_to_others_plot():
     """Generate plots to compare to other papers."""
+    mpl.use('pgf')
     fig, ax = plt.subplots(figsize=(20, 20))
 
     my_data = "./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_half.npy"
@@ -260,14 +260,16 @@ def compare_to_others_plot():
 
     others_data = np.load('./total_j_factors/j_factors/compare_values_j_factors.npz')
 
+    label_dict = {'1408.0002':r'Geringer-Sameth 2015 \cite{Geringer-Sameth2015ApJ...801...74G}', '1802.06811':r'Pace 2019 \cite{Pace:2018tin}', '1511.06296':r'Walker 2016 \cite{Walker:2016adk}', '1612.06398':r'Caldwell 2016 \cite{Caldwell:2016hrl}', '1804.06430':r'Koposov 2018 \cite{Koposov2018MNRAS.479.5343K}', '1712.03188':r'Bergstrom 2018 \cite{Bergstrom2018}', '1804.05052':r'Petac 2018 \cite{Petac:2018gue}', '1702.00408':r'Boddy 2017 \cite{Boddy:2017vpe}'}
+
     # s wave, to 0.5 degree
     data = [js, others_data['geringer2015'], others_data['pace2018'], others_data['walker2015'], others_data['caldwell2016'], others_data['koposov2018']]
     colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5), 'xkcd:purple', 'xkcd:hot pink']
-    labels = ['Our analysis', '1408.0002', '1802.06811', '1511.06296', '1612.06398', '1804.06430']
+    labels = ['This analysis', label_dict['1408.0002'], label_dict['1802.06811'], label_dict['1511.06296'], label_dict['1612.06398'], label_dict['1804.06430']]
 
     compare_plot(ax, data, colors, labels)
     plt.title(r"Comparison of $J$-factors at $0.5^\circ$ for $s$-wave annihilation")
-    outfile = './total_j_factors/j_factors/comparison_plot_s_half.pdf'
+    outfile = './total_j_factors/j_factors/comparison_plot_s_half.pgf'
     fig.savefig(outfile, bbox_inches='tight')
 
     # s wave, total
@@ -281,11 +283,11 @@ def compare_to_others_plot():
 
     data = [js, others_data['bergstrom2017_s'], others_data['petac2018_s']]
     colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach']
-    labels = ['Our analysis', '1712.03188', '1804.05052']
+    labels = ['This analysis', label_dict['1712.03188'], label_dict['1804.05052']]
 
     compare_plot(ax, data, colors, labels)
     plt.title(r"Comparison of total integrated $J$-factors for $s$-wave annihilation")
-    outfile = './total_j_factors/j_factors/comparison_plot_s_total.pdf'
+    outfile = './total_j_factors/j_factors/comparison_plot_s_total.pgf'
     fig.savefig(outfile, bbox_inches='tight')
 
     # som wave, total
@@ -294,16 +296,16 @@ def compare_to_others_plot():
 
     data = [jsom, others_data['bergstrom2017_som'], others_data['petac2018_som'], others_data['kumar2017_som']]
     colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5)]
-    labels = ['Our analysis', '1712.03188', '1804.05052', '1702.00408']
+    labels = ['Our analysis', label_dict['1712.03188'], label_dict['1804.05052'], label_dict['1702.00408']]
 
     compare_plot(ax, data, colors, labels)
     plt.title(r"Comparison of total integrated $J$-factors for Sommerfeld-enhanced annihilation")
-    outfile = './total_j_factors/j_factors/comparison_plot_som_total.pdf'
+    outfile = './total_j_factors/j_factors/comparison_plot_som_total.pgf'
     fig.savefig(outfile, bbox_inches='tight')
 
 
 if __name__ == '__main__':
-    bounds = [0.1, 0.2, 0.5, 10]
+    bounds = [0.5, 10]
     waves = ['s', 'p', 'd', 'som']
 
     angledict = {
@@ -316,5 +318,5 @@ if __name__ == '__main__':
     }
 
     plot_all_dwarfs([f"./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_{angledict[ub]}.npy" for ub in bounds])
-    # sorted_j_factors("./j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[10] + ".npy")
+    # sorted_j_factors(["./j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[ub] + ".npy" for ub in [0.5, 10]])
     compare_to_others_plot()

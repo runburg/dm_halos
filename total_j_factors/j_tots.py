@@ -43,7 +43,7 @@ def OLD_integrated_j_factor(list, upper_bound, wave):
             jtot = integrate.quad(lambda y: y * jdfunc(y), 0, ub, full_output=1)[0]
         if wave == 'som':
             n = -1
-            jtot = integrate.quad(lambda y: y * jsomfunc(y), 0, ub, full_output=1)[0]
+             jtot = integrate.quad(lambda y: y * jsomfunc(y), 0, ub, full_output=1)[0]
 
         temp_j.append([x[0], 4*np.pi*(10**x[2])**3*(10**x[3])**2/(x[1]**2)*(4 * np.pi * float(4.325E-6) * 10**x[3] * (10**x[2])**2 / (299792.458)**2)**(n/2.)*jtot * changeunits_to_gevcm])
 
@@ -246,6 +246,9 @@ def main():
                     jfac.append([dwarf, wave, np.log10(l), np.log10(a), np.log10(u)])
                 # if (dwarf == 'comaberenices' or dwarf == 'draco1' or dwarf == 'reticulum2_k15' or dwarf == 'ursaminor' or dwarf == 'segue1') and wave == 'som' and ub == 10:
                 #     print('{}, {}, {}, {}, {}'.format(dwarf, wave, d, r_s, rho_s))
+
+        jfac = np.array(jfac)
+        jfac = jfac[jfac[:, 0].argsort()]
 
         outfile = "/Users/runburg/github/dm_halos/total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[ub]
 

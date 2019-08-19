@@ -51,6 +51,7 @@ for angle in angles:
 
     for i, jfactor in enumerate([js, jp, jd, jsom]):
         j_temp = jfacs[np.arange(i, len(jfacs), 4)]
+        j_temp = j_temp[j_temp[:, 0].argsort()]
         if angle is angles[0]:
             jfactor.append(fix_names(j_temp[:, 0]))
         jfactor.append([rf"${format(round(ave.astype(np.float),2), '.2f')}^{{+{format(round(high.astype(np.float)-ave.astype(np.float),2), '.2f')}}}_{{-{format(round(ave.astype(np.float)-low.astype(np.float),2), '.2f')}}}$" for low, ave, high in zip(j_temp[:, 2], j_temp[:, 3], j_temp[:, 4])])
