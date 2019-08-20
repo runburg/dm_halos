@@ -185,16 +185,15 @@ def plot_all_dwarfs(infile):
         ax.axvline(idwarf, color='xkcd:light gray', lw=56, zorder=-100)
 
     # set ticks and labels
-    ax.set_ylabel(r"$\log_{10}\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$")
     x_labels = set_x_value_names(None, get_dict=True)
     ax.set_xticks(list(x_labels.values()))
     ax.set_xticklabels(list(x_labels.keys()), rotation=90)
-
     ax.set_xlim(left=0.5, right=25.5)
-    ax.yaxis.set_minor_locator(AutoMinorLocator())
-    ax.yaxis.set_tick_params(which='minor', left=True, right=True)
     ax.xaxis.set_tick_params(which='minor', bottom=False)
 
+    ax.set_ylabel(r"$\log_{10}\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$")
+    ax.yaxis.set_minor_locator(AutoMinorLocator())
+    ax.yaxis.set_tick_params(which='minor', left=True, right=True)
     ax.yaxis.grid(color='gray', linestyle='dashed')
     ax.yaxis.grid(which='minor', linestyle=':', linewidth='0.5', color='gray')
 
@@ -237,12 +236,12 @@ def compare_plot(ax, data, colors, labels):
     ax.xaxis.set_tick_params(which='minor', bottom=False)
 
     ax.yaxis.set_minor_locator(AutoMinorLocator())
-    ax.tick_params(axis='y', which='minor', left=True, right=True)
+    ax.yaxis.set_tick_params(which='minor', left=True, right=True)
     ax.yaxis.grid(color='gray', linestyle='dashed')
     ax.yaxis.grid(which='minor', linestyle=':', linewidth='0.5', color='gray')
 
-    for idwarf in np.arange(1, len(data[0])+2, 2):
-        ax.axvline(idwarf, color='xkcd:light grey', lw=40, zorder=-100)
+    for idwarf in np.arange(0, len(data[0])+2, 2):
+        ax.axvline(idwarf, color='xkcd:light grey', lw=44, zorder=-100)
 
     ax.set_ylabel(r"$\log_{10}\,\,\,\,J/(\mathrm{GeV}^2\mathrm{cm}^{-5})$")
     ax.legend(markerscale=1.25, prop={'size': 20}, frameon=True, loc='lower right')
@@ -257,10 +256,11 @@ def compare_to_others_plot():
     jfacs = np.load(my_data, allow_pickle=True)
     jfacs[:, 0] = fix_names(jfacs[:, 0])
     js = jfacs[np.arange(0, len(jfacs), 4)]
+    jp = jfacs[np.arange(1, len(jfacs), 4)]
 
     others_data = np.load('./total_j_factors/j_factors/compare_values_j_factors.npz')
 
-    label_dict = {'1408.0002':r'Geringer-Sameth 2015 \cite{Geringer-Sameth2015ApJ...801...74G}', '1802.06811':r'Pace 2019 \cite{Pace:2018tin}', '1511.06296':r'Walker 2016 \cite{Walker:2016adk}', '1612.06398':r'Caldwell 2016 \cite{Caldwell:2016hrl}', '1804.06430':r'Koposov 2018 \cite{Koposov2018MNRAS.479.5343K}', '1712.03188':r'Bergstrom 2018 \cite{Bergstrom2018}', '1804.05052':r'Petac 2018 \cite{Petac:2018gue}', '1702.00408':r'Boddy 2017 \cite{Boddy:2017vpe}'}
+    label_dict = {'1408.0002':r'Geringer-Sameth et al. 2015 \cite{Geringer-Sameth2015ApJ...801...74G}', '1802.06811':r'Pace et al. 2019 \cite{Pace:2018tin}', '1511.06296':r'Walker et al. 2016 \cite{Walker:2016adk}', '1612.06398':r'Caldwell et al. 2016 \cite{Caldwell:2016hrl}', '1804.06430':r'Koposov et al. 2018 \cite{Koposov2018MNRAS.479.5343K}', '1712.03188':r'Bergstrom et al. 2018 \cite{Bergstrom2018}', '1804.05052':r'Petac et al. 2018 \cite{Petac:2018gue}', '1702.00408':r'Boddy et al. 2017 \cite{Boddy:2017vpe}', '1601.02181':r'Zhao et al. 2016 \cite{Zhao2016}'}
 
     # s wave, to 0.5 degree
     data = [js, others_data['geringer2015'], others_data['pace2018'], others_data['walker2015'], others_data['caldwell2016'], others_data['koposov2018']]
@@ -281,9 +281,9 @@ def compare_to_others_plot():
     js = jfacs[np.arange(0, len(jfacs), 4)]
     jsom = jfacs[np.arange(3, len(jfacs), 4)]
 
-    data = [js, others_data['bergstrom2017_s'], others_data['petac2018_s']]
-    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach']
-    labels = ['This analysis', label_dict['1712.03188'], label_dict['1804.05052']]
+    data = [js, others_data['bergstrom2017_s'], others_data['petac2018_s'], others_data['zhao2016_s']]
+    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5)]
+    labels = ['This analysis', label_dict['1712.03188'], label_dict['1804.05052'], label_dict['1601.02181']]
 
     compare_plot(ax, data, colors, labels)
     plt.title(r"Comparison of total integrated $J$-factors for $s$-wave annihilation")
@@ -294,13 +294,27 @@ def compare_to_others_plot():
     plt.clf()
     fig, ax = plt.subplots(figsize=(20, 20))
 
-    data = [jsom, others_data['bergstrom2017_som'], others_data['petac2018_som'], others_data['kumar2017_som']]
-    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5)]
-    labels = ['Our analysis', label_dict['1712.03188'], label_dict['1804.05052'], label_dict['1702.00408']]
+    data = [jsom, others_data['bergstrom2017_som'], others_data['petac2018_som'], others_data['kumar2017_som'], others_data['zhao2016_som']]
+    colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5), 'xkcd:purple']
+    labels = ['This analysis', label_dict['1712.03188'], label_dict['1804.05052'], label_dict['1702.00408'], label_dict['1601.02181']]
 
     compare_plot(ax, data, colors, labels)
-    plt.title(r"Comparison of total integrated $J$-factors for Sommerfeld-enhanced annihilation")
+    ax.set_title(r"Comparison of total integrated $J$-factors for Sommerfeld-enhanced annihilation")
     outfile = './total_j_factors/j_factors/comparison_plot_som_total.pgf'
+    fig.savefig(outfile, bbox_inches='tight')
+
+    # # p wave, total
+    plt.clf()
+    fig, ax = plt.subplots(figsize=(20, 20))
+
+    data = [jp, others_data['zhao2016_p']]
+    colors = ['xkcd:azure', 'xkcd:coral']
+    labels = ['This analysis', label_dict['1601.02181']]
+
+    compare_plot(ax, data, colors, labels)
+    ax.set_title(r"Comparison of total integrated $J$-factors for $p$-wave annihilation")
+    outfile = './total_j_factors/j_factors/comparison_plot_p_total.pgf'
+
     fig.savefig(outfile, bbox_inches='tight')
 
 
