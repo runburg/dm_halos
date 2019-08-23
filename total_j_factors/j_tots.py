@@ -43,7 +43,7 @@ def OLD_integrated_j_factor(list, upper_bound, wave):
             jtot = integrate.quad(lambda y: y * jdfunc(y), 0, ub, full_output=1)[0]
         if wave == 'som':
             n = -1
-             jtot = integrate.quad(lambda y: y * jsomfunc(y), 0, ub, full_output=1)[0]
+            jtot = integrate.quad(lambda y: y * jsomfunc(y), 0, ub, full_output=1)[0]
 
         temp_j.append([x[0], 4*np.pi*(10**x[2])**3*(10**x[3])**2/(x[1]**2)*(4 * np.pi * float(4.325E-6) * 10**x[3] * (10**x[2])**2 / (299792.458)**2)**(n/2.)*jtot * changeunits_to_gevcm])
 
@@ -212,6 +212,7 @@ def main():
 
     dwarflist = np.load('./total_j_factors/j_factors/data2_jfac_extra_v1.npy')['name_short']
     dwarflist = np.concatenate((np.setdiff1d(dwarflist, dwarflist_exclude), np.array(['crater2', 'hydrus1', 'sagittarius2'])))
+    dwarflist = sorted(dwarflist)
 
     bounds = [0.1, 0.2, 0.5, 10]
     waves = ['s', 'p', 'd', 'som']
@@ -248,7 +249,7 @@ def main():
                 #     print('{}, {}, {}, {}, {}'.format(dwarf, wave, d, r_s, rho_s))
 
         jfac = np.array(jfac)
-        jfac = jfac[jfac[:, 0].argsort()]
+        # jfac = jfac[jfac[:, 0].argsort()]
 
         outfile = "/Users/runburg/github/dm_halos/total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_" + angledict[ub]
 

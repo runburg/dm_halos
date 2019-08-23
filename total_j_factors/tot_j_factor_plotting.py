@@ -209,7 +209,7 @@ def plot_all_dwarfs(infile):
         legend_elements.append(ebar)
 
     ax.legend(handles=legend_elements, labels=labels.append(angle_labels), markerscale=1.25, prop={'size': 24}, frameon=True, loc='lower right')
-    outfile = infile[0][:-9] + '_working_plot.pdf'
+    outfile = './total_j_factors/j_factors/tot_j_factor.pdf'
     fig.savefig(outfile, bbox_inches='tight')
 
 
@@ -226,14 +226,16 @@ def compare_plot(ax, data, colors, labels):
         except KeyError:
             print('Error with key: ', d[:, 0])
             pass
-        error_plot(ax, d, offset=ioffset/(2*len(data)), color=c, label=l, ec=lighten_color(c, amount=1.5), mec=lighten_color(c, amount=1.5))
+        error_plot(ax, d, offset=(ioffset+0.5)/(1.5*len(labels)), color=c, label=l, ec=lighten_color(c, amount=1.5), mec=lighten_color(c, amount=1.5))
 
     x_labels = set_x_value_names(None, get_dict=True)
+    padding = len(max(list(x_labels), key=len))
 
     ax.set_xlim(left=0.5, right=25.5)
     ax.set_xticks(list(x_labels.values()))
-    ax.set_xticklabels(list(x_labels.keys()), rotation=90)
+    ax.set_xticklabels([r''+label.rjust(padding) for label in list(x_labels.keys())], rotation=90)
     ax.xaxis.set_tick_params(which='minor', bottom=False)
+    ax.xaxis.labelpad = 0
 
     ax.yaxis.set_minor_locator(AutoMinorLocator())
     ax.yaxis.set_tick_params(which='minor', left=True, right=True)
@@ -260,7 +262,7 @@ def compare_to_others_plot():
 
     others_data = np.load('./total_j_factors/j_factors/compare_values_j_factors.npz')
 
-    label_dict = {'1408.0002':r'Geringer-Sameth et al. 2015 \cite{Geringer-Sameth2015ApJ...801...74G}', '1802.06811':r'Pace et al. 2019 \cite{Pace:2018tin}', '1511.06296':r'Walker et al. 2016 \cite{Walker:2016adk}', '1612.06398':r'Caldwell et al. 2016 \cite{Caldwell:2016hrl}', '1804.06430':r'Koposov et al. 2018 \cite{Koposov2018MNRAS.479.5343K}', '1712.03188':r'Bergstrom et al. 2018 \cite{Bergstrom2018}', '1804.05052':r'Petac et al. 2018 \cite{Petac:2018gue}', '1702.00408':r'Boddy et al. 2017 \cite{Boddy:2017vpe}', '1601.02181':r'Zhao et al. 2016 \cite{Zhao2016}'}
+    label_dict = {'1408.0002':r'Geringer-Sameth et al. 2015 \cite{Geringer-Sameth2015ApJ...801...74G}', '1802.06811':r'Pace et al. 2019 \cite{Pace:2018tin}', '1511.06296':r'Walker et al. 2016 \cite{Walker:2016adk}', '1612.06398':r'Caldwell et al. 2016 \cite{Caldwell:2016hrl}', '1804.06430':r'Koposov et al. 2018 \cite{Koposov2018MNRAS.479.5343K}', '1712.03188':r'Bergstrom et al. 2018 \cite{Bergstrom2018}', '1804.05052':r'Petac et al. 2018 \cite{Petac:2018gue}', '1702.00408':r'Boddy et al. 2017 \cite{Boddy:2017vpe}', '1601.02181':r'Zhao et al. 2016 \cite{Zhao2016}', '1711.04696':r'Zhao et al. 2017 \cite{Zhao2017}'}
 
     # s wave, to 0.5 degree
     data = [js, others_data['geringer2015'], others_data['pace2018'], others_data['walker2015'], others_data['caldwell2016'], others_data['koposov2018']]
@@ -272,6 +274,20 @@ def compare_to_others_plot():
     outfile = './total_j_factors/j_factors/comparison_plot_s_half.pgf'
     fig.savefig(outfile, bbox_inches='tight')
 
+    # # p wave, half
+    plt.clf()
+    fig, ax = plt.subplots(figsize=(20, 20))
+
+    data = [jp, others_data['zhao2017']]
+    colors = ['xkcd:azure',  'xkcd:peach']
+    labels = ['This analysis', label_dict['1711.04696']]
+
+    compare_plot(ax, data, colors, labels)
+    ax.set_title(r"Comparison of integrated $J$-factors for $p$-wave annihilation to 0.5$^\circ$")
+    outfile = './total_j_factors/j_factors/comparison_plot_p_half.pgf'
+
+    fig.savefig(outfile, bbox_inches='tight')
+
     # s wave, total
     plt.clf()
     fig, ax = plt.subplots(figsize=(20, 20))
@@ -280,6 +296,7 @@ def compare_to_others_plot():
     jfacs[:, 0] = fix_names(jfacs[:, 0])
     js = jfacs[np.arange(0, len(jfacs), 4)]
     jsom = jfacs[np.arange(3, len(jfacs), 4)]
+    jp = jfacs[np.arange(1, len(jfacs), 4)]
 
     data = [js, others_data['bergstrom2017_s'], others_data['petac2018_s'], others_data['zhao2016_s']]
     colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5)]

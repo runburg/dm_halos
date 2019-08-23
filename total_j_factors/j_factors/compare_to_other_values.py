@@ -160,4 +160,14 @@ zhao2016_som[:, 1] = ['som'] * len(zhao2016_som[:, 1])
 for i in range(2,5):
     zhao2016_som[:, i] = zhao2016_som[:, i].astype(np.float) + np.log10(np.sqrt(np.pi) * c / vels)
 
-np.savez('./total_j_factors/j_factors/compare_values_j_factors.npz', geringer2015=geringer2015, bergstrom2017_s=bergstrom2017_s, bergstrom2017_som=bergstrom2017_som, pace2018=pace2018, petac2018_s=petac2018_s, petac2018_som=petac2018_som, kumar2017_som=kumar2017_som, walker2015=walker2015, caldwell2016=caldwell2016, koposov2018=koposov2018, zhao2016_s=zhao2016_s, zhao2016_p=zhao2016_p, zhao2016_som=zhao2016_som)
+# ## 1711.04696
+# p
+zhao2017 = np.array([
+    ['Wil1', 'p', (19.5-0.6), 19.5, (19.5+1.3)],
+    ['RetII', 'p', (19.5-0.8), 19.5, (19.5+1.1)]
+])
+
+zhao2017[:, 2:] = zhao2017[:, 2:].astype(np.float)-np.array(np.log10(c**2))
+
+
+np.savez('./total_j_factors/j_factors/compare_values_j_factors.npz', geringer2015=geringer2015, bergstrom2017_s=bergstrom2017_s, bergstrom2017_som=bergstrom2017_som, pace2018=pace2018, petac2018_s=petac2018_s, petac2018_som=petac2018_som, kumar2017_som=kumar2017_som, walker2015=walker2015, caldwell2016=caldwell2016, koposov2018=koposov2018, zhao2016_s=zhao2016_s, zhao2016_p=zhao2016_p, zhao2016_som=zhao2016_som, zhao2017=zhao2017)

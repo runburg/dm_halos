@@ -43,20 +43,45 @@ def fix_names(name_list, get_dict=False):
 
 
 angles = ['tenth', 'twotenth', 'half', '10']
-header = r"Galaxy & $J(0.1^\circ)$ & $J(0.2^\circ)$ & $J(0.5^\circ)$ & $J(10^\circ)$\\&GeV$^2$cm$^{-5}$&GeV$^2$cm$^{-5}$&GeV$^2$cm$^{-5}$&GeV$^2$cm$^{-5}$\\\hline"
+header = (r"\centering\footnotesize\hspace*{-2cm}\begin{tabular}{| l | c c c c | c c c c | c c c c | c c c c |}"
+            r"\cline{2-17}\multicolumn{1}{c}{} & \multicolumn{4}{|c|}{$s$-wave} & \multicolumn{4}{|c|}{$p$-wave} & \multicolumn{4}{|c|}{$d$-wave} & \multicolumn{4}{|c|}{Sommerfeld}\\\hline"
+            r" Galaxy & $J(0.1^\circ)$ & $J(0.2^\circ)$ & $J(0.5^\circ)$ & $J(10^\circ)$"
+            r"& $J(0.1^\circ)$ & $J(0.2^\circ)$ & $J(0.5^\circ)$ & $J(10^\circ)$"
+            r"& $J(0.1^\circ)$ & $J(0.2^\circ)$ & $J(0.5^\circ)$ & $J(10^\circ)$"
+            r"& $J(0.1^\circ)$ & $J(0.2^\circ)$ & $J(0.5^\circ)$ & $J(10^\circ)$\\"
+            r"&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}"
+            r"&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}"
+            r"&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}"
+            r"&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}&\scriptsize{GeV$^2$cm$^{-5}$}\\\hline %")
+footer = r"\hline \end{tabular}%"
+
 js, jp, jd, jsom = [], [], [], []
+jfacs = np.load(f'./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_tenth.npy', allow_pickle=True)
+table = np.empty((len(jfacs)//4, 17), dtype='U24')
+table[:, 0] = fix_names(jfacs[np.arange(0, len(jfacs), 4)][:, 0])
 
-for angle in angles:
-    jfacs = np.load(f'./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_{angle}.npy', allow_pickle=True)
-
-    for i, jfactor in enumerate([js, jp, jd, jsom]):
+for i, jfactor in enumerate([js, jp, jd, jsom]):
+    for i_angle, angle in enumerate(angles, start=1):
+        jfacs = np.load(f'./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_{angle}.npy', allow_pickle=True)
         j_temp = jfacs[np.arange(i, len(jfacs), 4)]
         j_temp = j_temp[j_temp[:, 0].argsort()]
-        if angle is angles[0]:
-            jfactor.append(fix_names(j_temp[:, 0]))
-        jfactor.append([rf"${format(round(ave.astype(np.float),2), '.2f')}^{{+{format(round(high.astype(np.float)-ave.astype(np.float),2), '.2f')}}}_{{-{format(round(ave.astype(np.float)-low.astype(np.float),2), '.2f')}}}$" for low, ave, high in zip(j_temp[:, 2], j_temp[:, 3], j_temp[:, 4])])
 
-np.savetxt('./total_j_factors/j_factors/tables/J_s_table.txt', np.array(js).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
-np.savetxt('./total_j_factors/j_factors/tables/J_p_table.txt', np.array(jp).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
-np.savetxt('./total_j_factors/j_factors/tables/J_d_table.txt', np.array(jd).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
-np.savetxt('./total_j_factors/j_factors/tables/J_som_table.txt', np.array(jsom).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
+        table[:, i_angle + 4*i] = [rf"${format(round(ave.astype(np.float),2), '.2f')}^{{+{format(round(high.astype(np.float)-ave.astype(np.float),2), '.2f')}}}_{{-{format(round(ave.astype(np.float)-low.astype(np.float),2), '.2f')}}}$" for low, ave, high in zip(j_temp[:, 2], j_temp[:, 3], j_temp[:, 4])]
+
+np.savetxt('./total_j_factors/j_factors/tables/full_table.txt', table, delimiter=' & ',newline=r'\\'+'\n', header=header, footer=footer, fmt='%s', comments='')
+
+
+# for angle in angles:
+#     jfacs = np.load(f'./total_j_factors/j_factors/tot_j_factors/tot_j_fac_inclusive_{angle}.npy', allow_pickle=True)
+#
+#     for i, jfactor in enumerate([js, jp, jd, jsom]):
+#         j_temp = jfacs[np.arange(i, len(jfacs), 4)]
+#         j_temp = j_temp[j_temp[:, 0].argsort()]
+#         if angle is angles[0]:
+#             jfactor.append(fix_names(j_temp[:, 0]))
+#         jfactor.append([rf"${format(round(ave.astype(np.float),2), '.2f')}^{{+{format(round(high.astype(np.float)-ave.astype(np.float),2), '.2f')}}}_{{-{format(round(ave.astype(np.float)-low.astype(np.float),2), '.2f')}}}$" for low, ave, high in zip(j_temp[:, 2], j_temp[:, 3], j_temp[:, 4])])
+#
+# np.savetxt('./total_j_factors/j_factors/tables/J_s_table.txt', np.array(js).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
+# np.savetxt('./total_j_factors/j_factors/tables/J_p_table.txt', np.array(jp).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
+# np.savetxt('./total_j_factors/j_factors/tables/J_d_table.txt', np.array(jd).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')
+# np.savetxt('./total_j_factors/j_factors/tables/J_som_table.txt', np.array(jsom).T, delimiter=' & ',newline=r'\\'+'\n', header=header, fmt='%s', comments='')

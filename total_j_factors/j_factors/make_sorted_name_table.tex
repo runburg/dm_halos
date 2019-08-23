@@ -1,8 +1,10 @@
 \documentclass{article}
+\usepackage{multirow}
 
 \begin{document}
-\begin{tabular}{| c | c | c | c |}
-  \hline
-  \input{./tot_j_factors/tot_j_fac_inclusive_10_sorted_names.txt}
-\end{tabular}
+\begin{table*}[h]
+    \input{tables/full_table.txt}
+    \caption{Integrated $J$-factors presented as $\log_{10}(J/\mathrm{GeV}^2\mathrm{cm}^{-5})$ for $s$-wave annihilation for cones of radius 0.1$^\circ$, 0.2$^\circ$, 0.5$^\circ$ and 10$^\circ$.}
+    \label{tab:j_full}
+\end{table*}
 \end{document}

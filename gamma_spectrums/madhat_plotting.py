@@ -232,7 +232,7 @@ def cross_section_all_waves_plots(files, outfile, nrows=2, ncols=2):
     # choose colors, labels, and titles for subplots
     labels = ['Tau', 'Mu', 'b',  'W']
     colors = ['xkcd:azure', 'xkcd:coral', 'xkcd:peach', lighten_color('xkcd:light turquoise', amount=1.5), lighten_color('xkcd:purple', amount=0.8), 'xkcd:hot pink']
-    titles = {'s': r"$s$-wave", 'p': r"$p$-wave", 'd': r"$d$-wave", 'som': r"Som. enh."}
+    titles = {'s': r"$s$-wave", 'p': r"$p$-wave", 'd': r"$d$-wave", 'som': r"Sommerfeld enhancement"}
 
     colors = dict(zip(labels, colors))
     for filename in files:
